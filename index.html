@@ -1347,11 +1347,29 @@ function saveWork(mk,i){
   if(+g('w-status')===2&&prev!==2)award(15);else toast('Progresso salvo ✅');
   save();
 }
-function runOnline(){
-  const code=document.getElementById('w-code').value;
-  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>{},()=>{});
-  window.open('https://www.onlinegdb.com/online_c_compiler','_blank');
-  toast('Código copiado! Cole (Ctrl+V) no compilador que abriu 📋');
+function runOnline(){sendToCompiler(document.getElementById('w-code').value);}
+/* Envia o código já carregado ao compilador online (Wandbox), com fallback */
+async function sendToCompiler(code){
+  if(!code||!code.trim()){toast('Escreva algum código primeiro ✍️');return;}
+  const win=window.open('','_blank'); // abre na hora (gesto do usuário, evita bloqueio de pop-up)
+  if(win)win.document.write('<body style="font-family:sans-serif;background:#0d1117;color:#e6edf6;padding:40px"><h2>⏳ Carregando seu código no compilador...</h2><p>Aguarde, abrindo o Wandbox com o programa pronto para rodar.</p></body>');
+  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>{},()=>{}); // garantia extra
+  try{
+    const r=await fetch('https://wandbox.org/api/compile.json',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({code,compiler:'gcc-head',save:true,stdin:''})});
+    if(!r.ok)throw new Error('http '+r.status);
+    const j=await r.json();
+    const url=j.url||(j.permlink?('https://wandbox.org/permlink/'+j.permlink):null);
+    if(!url)throw new Error('sem permlink');
+    if(win)win.location.href=url;else window.open(url,'_blank');
+    toast('Código carregado no compilador ✅ (clique em Run para executar)');
+  }catch(e){
+    // fallback: OnlineGDB + código já na área de transferência
+    if(win)win.location.href='https://www.onlinegdb.com/online_c_compiler';
+    else window.open('https://www.onlinegdb.com/online_c_compiler','_blank');
+    toast('Código copiado! Cole no compilador (Ctrl+V) 📋');
+  }
 }
 
 /* ============ EXERCÍCIOS — lista ============ */
@@ -1675,12 +1693,7 @@ function switchLvl(tab){
   const li=tab.dataset.li;
   document.querySelectorAll('#ex-blocks .ex-block').forEach(b=>b.classList.toggle('show',b.dataset.li===li));
 }
-function runSnippet(idx,mk){
-  const code=TEACH[mk].examples[idx].code;
-  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>{},()=>{});
-  window.open('https://www.onlinegdb.com/online_c_compiler','_blank');
-  toast('Exemplo copiado! Cole (Ctrl+V) no compilador 📋');
-}
+function runSnippet(idx,mk){sendToCompiler(TEACH[mk].examples[idx].code);}
 function goModExercises(mk){document.querySelector('[data-view="exercises"]').click();
   document.getElementById('ex-filter').value=mk;renderEx();}
 

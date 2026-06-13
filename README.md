@@ -1,11 +1,14 @@
 # 🚀 Aprendendo C — Minha Jornada
 
+### ▶️ [**ACESSAR O APP ONLINE**](https://lucasriboldi.github.io/Aprendendo_C/) 🌐
+
+[![Abrir app](https://img.shields.io/badge/▶_Abrir_o_app-lucasriboldi.github.io%2FAprendendo__C-3b82f6?style=for-the-badge)](https://lucasriboldi.github.io/Aprendendo_C/)
+
+---
+
 Aplicativo de estudo **single-file** (um único `index.html`, sem instalação e sem servidor) para aprender a linguagem **C** de forma estruturada, com base na disciplina **Programação Estruturada** (IFRS Campus Canoas).
 
-> Abra o `index.html` no navegador — tudo funciona offline e seus dados ficam salvos no próprio navegador (`localStorage`).
-
-🔗 **Acesse online:** ative o GitHub Pages (Settings → Pages → branch `main`) e o app fica disponível em
-`https://lucasriboldi.github.io/Aprendendo_C/`
+> Funciona online no link acima, ou baixe e abra o `index.html` no navegador — tudo funciona offline e seus dados ficam salvos no próprio navegador (`localStorage`).
 
 ---
 
