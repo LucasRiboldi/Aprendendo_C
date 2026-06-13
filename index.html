@@ -1,0 +1,1982 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Jornada em C 🚀 — Programação Estruturada</title>
+<style>
+  :root{
+    --bg:#0a0e14; --bg2:#121823; --panel:#161d2b; --panel2:#1c2536;
+    --border:#26324a; --txt:#e6edf6; --muted:#8a98b0; --muted2:#5d6b85;
+    --acc:#3b82f6; --acc2:#8b5cf6; --grad:linear-gradient(135deg,#3b82f6,#8b5cf6);
+    --green:#22c55e; --yellow:#eab308; --red:#ef4444; --orange:#f97316; --cyan:#06b6d4;
+    --shadow:0 10px 40px -10px rgba(0,0,0,.6); --r:14px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Segoe UI',system-ui,sans-serif;
+    background:radial-gradient(1200px 600px at 80% -10%,#1a2238 0%,transparent 60%),var(--bg);
+    color:var(--txt);min-height:100vh;line-height:1.5}
+  ::-webkit-scrollbar{width:10px;height:10px}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px}
+  ::-webkit-scrollbar-track{background:transparent}
+
+  .app{display:grid;grid-template-columns:255px 1fr;min-height:100vh}
+  .sidebar{background:linear-gradient(180deg,var(--bg2),var(--bg));border-right:1px solid var(--border);
+    padding:24px 16px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:5px;overflow-y:auto}
+  .brand{display:flex;align-items:center;gap:12px;margin-bottom:22px;padding:0 8px}
+  .logo{width:42px;height:42px;border-radius:12px;background:var(--grad);display:grid;place-items:center;
+    font-weight:800;font-size:20px;color:#fff;box-shadow:0 8px 24px -6px var(--acc)}
+  .brand h1{font-size:15px;font-weight:700}
+  .brand p{font-size:11px;color:var(--muted)}
+  .nav-btn{display:flex;align-items:center;gap:11px;padding:11px 13px;border-radius:10px;color:var(--muted);
+    cursor:pointer;border:none;background:none;width:100%;font-size:14px;font-weight:500;text-align:left;
+    transition:.18s;font-family:inherit}
+  .nav-btn:hover{background:var(--panel);color:var(--txt)}
+  .nav-btn.active{background:var(--panel2);color:var(--txt);box-shadow:inset 3px 0 0 var(--acc)}
+  .nav-btn .ico{font-size:16px;width:20px;text-align:center}
+  .nav-btn .badge{margin-left:auto;background:var(--border);color:var(--muted);font-size:11px;
+    padding:1px 8px;border-radius:20px;font-weight:600}
+  .sidebar-foot{margin-top:auto;display:flex;flex-direction:column;gap:8px;padding-top:16px;border-top:1px solid var(--border)}
+  .mini-btn{font-size:12px;color:var(--muted);background:var(--panel);border:1px solid var(--border);
+    padding:8px;border-radius:8px;cursor:pointer;font-family:inherit;transition:.15s}
+  .mini-btn:hover{color:var(--txt);border-color:var(--acc)}
+
+  .main{padding:30px 40px;max-width:1120px;margin:0 auto;width:100%}
+  .view{display:none;animation:fade .35s ease}
+  .view.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .page-head{margin-bottom:26px}
+  .page-head h2{font-size:25px;font-weight:800;letter-spacing:-.5px}
+  .page-head p{color:var(--muted);margin-top:4px;font-size:14px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
+  .stat{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:18px;position:relative;overflow:hidden}
+  .stat::after{content:'';position:absolute;right:-20px;top:-20px;width:80px;height:80px;background:var(--grad);opacity:.08;border-radius:50%}
+  .stat .num{font-size:28px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .stat .lbl{color:var(--muted);font-size:12px;margin-top:2px;text-transform:uppercase;letter-spacing:.5px}
+
+  .progress-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:24px}
+  .progress-card h3{font-size:15px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+  .progress-card h3 span{color:var(--acc);font-weight:700}
+  .bar{height:12px;background:var(--bg);border-radius:20px;overflow:hidden;border:1px solid var(--border)}
+  .bar > div{height:100%;background:var(--grad);border-radius:20px;transition:width .6s cubic-bezier(.4,0,.2,1);width:0}
+
+  .phase{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+  .phase-head{display:flex;align-items:center;gap:14px;padding:16px 18px;cursor:pointer;user-select:none}
+  .phase-head:hover{background:var(--panel2)}
+  .phase-icon{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;font-size:18px;flex-shrink:0}
+  .phase-head h3{font-size:15px;flex:1}
+  .phase-head .pct{font-size:12px;color:var(--muted);font-weight:600;margin-right:6px}
+  .phase-bar{width:80px;height:7px;background:var(--bg);border-radius:10px;overflow:hidden}
+  .phase-bar > div{height:100%;background:var(--grad);transition:.5s}
+  .ex-count{font-size:11px;background:var(--bg);border:1px solid var(--border);color:var(--muted);
+    padding:2px 8px;border-radius:20px;white-space:nowrap}
+  .chev{color:var(--muted);transition:.25s;font-size:12px}
+  .phase.open .chev{transform:rotate(90deg)}
+  .topics{display:none;padding:4px 18px 14px;flex-direction:column;gap:6px}
+  .phase.open .topics{display:flex}
+  .topic{display:flex;align-items:center;gap:11px;padding:10px 13px;border-radius:10px;background:var(--bg2);border:1px solid transparent;transition:.15s;flex-wrap:wrap}
+  .topic:hover{border-color:var(--border)}
+  .tcheck{width:21px;height:21px;border-radius:6px;border:2px solid var(--muted2);cursor:pointer;flex-shrink:0;display:grid;place-items:center;transition:.15s;background:none}
+  .tcheck.done{background:var(--green);border-color:var(--green)}
+  .tcheck.done::after{content:'✓';color:#fff;font-size:12px;font-weight:800}
+  .tcheck.study{background:var(--yellow);border-color:var(--yellow)}
+  .tcheck.study::after{content:'◐';color:#000;font-size:11px;font-weight:800}
+  .topic .tname{flex:1;font-size:14px;cursor:pointer;min-width:120px}
+  .topic.is-done .tname{color:var(--muted);text-decoration:line-through}
+  .diff-dots{display:flex;gap:3px}
+  .dot{width:13px;height:13px;border-radius:50%;background:var(--border);cursor:pointer;transition:.15s}
+  .dot:hover{transform:scale(1.25)}
+  .dot.on1{background:var(--green)} .dot.on2{background:#84cc16} .dot.on3{background:var(--yellow)} .dot.on4{background:var(--orange)} .dot.on5{background:var(--red)}
+  .tnote-btn{background:none;border:none;color:var(--muted2);cursor:pointer;font-size:15px;padding:2px 6px;border-radius:6px;transition:.15s}
+  .tnote-btn:hover{color:var(--acc);background:var(--panel)} .tnote-btn.has{color:var(--acc2)}
+  .topic-note{display:none;width:100%;margin-top:8px}
+  .topic-note textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;color:var(--txt);padding:10px;font-family:inherit;font-size:13px;resize:vertical;min-height:60px}
+
+  .btn{background:var(--grad);color:#fff;border:none;padding:11px 20px;border-radius:10px;font-weight:600;cursor:pointer;font-size:14px;font-family:inherit;transition:.18s;box-shadow:0 6px 18px -6px var(--acc)}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 10px 24px -6px var(--acc)}
+  .btn.ghost{background:var(--panel);box-shadow:none;border:1px solid var(--border);color:var(--txt)}
+  .btn.ghost:hover{border-color:var(--acc)}
+  .btn.sm{padding:8px 14px;font-size:13px}
+  .btn.run{background:linear-gradient(135deg,#22c55e,#16a34a);box-shadow:0 6px 18px -6px var(--green)}
+  .toolbar{display:flex;gap:10px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+  .search{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--txt);font-family:inherit;font-size:14px}
+  .search:focus{outline:none;border-color:var(--acc)}
+  select.search{cursor:pointer;flex:0 0 auto;min-width:auto}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  .field input,.field textarea,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--txt);padding:11px 13px;font-size:14px;font-family:inherit}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--acc)}
+  .field textarea{resize:vertical;min-height:90px}
+  .field textarea.code{font-family:'Consolas','Courier New',monospace;font-size:13px;background:#0d1117;min-height:200px;line-height:1.5;tab-size:4}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+
+  .overlay{position:fixed;inset:0;background:rgba(5,8,14,.75);backdrop-filter:blur(4px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
+  .overlay.show{display:flex;animation:fade .2s}
+  .modal{background:var(--panel);border:1px solid var(--border);border-radius:18px;padding:26px;width:100%;max-width:680px;max-height:92vh;overflow-y:auto;box-shadow:var(--shadow)}
+  .modal h3{font-size:19px;margin-bottom:6px}
+  .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:8px;flex-wrap:wrap}
+  .statement-box{background:var(--bg2);border:1px solid var(--border);border-left:3px solid var(--acc);border-radius:10px;padding:14px 16px;font-size:14px;color:#cdd8ea;white-space:pre-wrap;margin:14px 0}
+  .hint-box{background:rgba(234,179,8,.08);border:1px solid rgba(234,179,8,.25);border-radius:10px;padding:12px 14px;font-size:13px;color:#fde047;margin-bottom:14px}
+
+  .item{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:12px;transition:.15s}
+  .item:hover{border-color:var(--acc)}
+  .item.clickable{cursor:pointer}
+  .item-head{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+  .item-head h4{font-size:15px;flex:1}
+  .item-num{color:var(--muted2);font-weight:700;font-size:13px;margin-right:2px}
+  .tag{font-size:11px;padding:3px 10px;border-radius:20px;font-weight:600;white-space:nowrap}
+  .tag.mod{background:rgba(59,130,246,.15);color:#7cb0ff;border:1px solid rgba(59,130,246,.3)}
+  .tag.s-0{background:rgba(148,163,184,.15);color:#cbd5e1}
+  .tag.s-1{background:rgba(234,179,8,.15);color:#fde047}
+  .tag.s-2{background:rgba(34,197,94,.15);color:#86efac}
+  .item-body{color:var(--muted);font-size:13.5px;white-space:pre-wrap;word-break:break-word}
+  .item-code{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:12px;font-family:'Consolas',monospace;font-size:13px;color:#c9d1d9;white-space:pre-wrap;overflow-x:auto;margin-top:8px}
+  .item-foot{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .item-foot .date{font-size:12px;color:var(--muted2);margin-right:auto}
+  .icon-btn{background:none;border:1px solid var(--border);color:var(--muted);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:14px;transition:.15s}
+  .icon-btn:hover{color:var(--txt);border-color:var(--acc)}
+  .icon-btn.del:hover{color:var(--red);border-color:var(--red)}
+  .stars{font-size:12px;color:var(--yellow)}
+  .mini-prog{font-size:12px;color:var(--muted)}
+
+  .empty{text-align:center;padding:50px 20px;color:var(--muted2)}
+  .empty .big{font-size:46px;margin-bottom:12px;opacity:.5}
+
+  .diff-list{display:flex;flex-direction:column;gap:10px}
+  .diff-row{display:flex;align-items:center;gap:14px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:12px 16px}
+  .diff-row .dn{flex:1;font-size:14px;font-weight:500}
+  .diff-row .meter{width:150px;height:9px;background:var(--bg);border-radius:10px;overflow:hidden}
+  .diff-row .meter > div{height:100%;border-radius:10px;transition:.5s}
+  .diff-row .val{font-size:13px;font-weight:700;width:34px;text-align:right}
+
+  .mod-group{margin-bottom:22px}
+  .mod-group > .mh{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:0 4px}
+  .mod-group > .mh .mi{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:15px}
+  .mod-group > .mh h3{font-size:16px;font-weight:700;flex:1}
+  .mod-group > .mh .done-c{font-size:12px;color:var(--muted)}
+
+  .helper-tip{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.08));border:1px solid rgba(59,130,246,.25);border-radius:12px;padding:14px 18px;margin-bottom:22px;font-size:14px;color:#bcd0f0}
+  .helper-tip b{color:#fff}
+  .eval-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+  .eval-opt{border:1px solid var(--border);border-radius:9px;padding:10px;text-align:center;cursor:pointer;font-size:13px;background:var(--bg);transition:.15s}
+  .eval-opt:hover{border-color:var(--acc)}
+  .eval-opt.sel{border-color:var(--acc);background:rgba(59,130,246,.12);color:#fff}
+  /* trilha animada */
+  .legend-stats{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .legend-stats .ls{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:8px 14px;font-size:13px;color:var(--muted)}
+  .legend-stats .ls b{color:var(--txt);font-size:16px}
+  .trilha-path{stroke:var(--border);stroke-width:5;fill:none}
+  .trilha-path.lit{stroke:url(#tg);stroke-width:5}
+  .trilha-flow{stroke:#8b5cf6;stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:2 16;animation:flow 1.1s linear infinite;filter:drop-shadow(0 0 4px #8b5cf6)}
+  @keyframes flow{to{stroke-dashoffset:-18}}
+  .tnode{cursor:pointer}
+  .tnode circle.bg{transition:.3s}
+  .tnode:hover circle.bg{filter:brightness(1.25)}
+  .tnode.current circle.ring{animation:pulse 1.6s ease-in-out infinite;transform-origin:center}
+  @keyframes pulse{0%,100%{opacity:.25;r:34}50%{opacity:.9;r:40}}
+  .tnode text.lbl{font-size:11px;fill:var(--muted);font-family:'Segoe UI',sans-serif}
+  .tnode.done text.lbl{fill:var(--txt)}
+  code{background:var(--bg2);padding:1px 6px;border-radius:5px;font-size:.9em;color:#7cb0ff;font-family:'Consolas',monospace}
+  /* level tabs */
+  .lvl-tabs{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+  .lvl-tab{padding:8px 16px;border-radius:9px;border:1px solid var(--border);background:var(--bg);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);transition:.15s}
+  .lvl-tab:hover{color:var(--txt)}
+  .lvl-tab.on{color:#fff;border-color:transparent}
+  .lvl-tab.on.l0{background:linear-gradient(135deg,#22c55e,#16a34a)}
+  .lvl-tab.on.l1{background:linear-gradient(135deg,#eab308,#ca8a04)}
+  .lvl-tab.on.l2{background:linear-gradient(135deg,#ef4444,#dc2626)}
+  .ex-block{display:none}
+  .ex-block.show{display:block;animation:fade .25s}
+  .ex-title{font-size:14px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .lvl-badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:700}
+  .lvl-badge.l0{background:rgba(34,197,94,.18);color:#86efac} .lvl-badge.l1{background:rgba(234,179,8,.18);color:#fde047} .lvl-badge.l2{background:rgba(239,68,68,.18);color:#fca5a5}
+  .ex-explain{background:var(--bg2);border-left:3px solid var(--acc);border-radius:8px;padding:10px 14px;font-size:13px;color:#cdd8ea;margin-top:10px}
+  .reason{background:linear-gradient(135deg,rgba(139,92,246,.1),rgba(59,130,246,.06));border:1px solid rgba(139,92,246,.28);border-radius:10px;padding:12px 16px;margin-bottom:12px}
+  .reason-h{font-size:13px;font-weight:700;color:#c4b5fd;margin-bottom:8px}
+  .reason-list{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px}
+  .reason-list li{font-size:13px;color:#dbe4f3;line-height:1.45}
+  .reason-list li::marker{color:var(--acc2);font-weight:700}
+  .code-label{font-size:12px;color:var(--muted);margin-bottom:6px;font-weight:600}
+  /* leitor de aulas */
+  .au-top{display:flex;gap:14px;align-items:center;margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+  .au-top .phase-icon{width:46px;height:46px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+  .au-body{display:flex;flex-direction:column;gap:18px}
+  .au-sec{}
+  .au-h{font-size:16px;font-weight:700;margin-bottom:7px;color:var(--txt);display:flex;align-items:center;gap:8px}
+  .au-h::before{content:'';width:4px;height:16px;background:var(--grad);border-radius:3px;display:inline-block}
+  .au-p{font-size:14.5px;color:#c8d3e6;white-space:pre-wrap;line-height:1.65}
+  .au-sec.box-warn{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.22);border-radius:10px;padding:12px 16px}
+  .au-sec.box-warn .au-p{color:#fca5a5}
+  .au-sec.box-tip{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.22);border-radius:10px;padding:12px 16px}
+  .au-sec.box-tip .au-p{color:#86efac}
+  .au-sec.box-warn .au-h::before,.au-sec.box-tip .au-h::before{display:none}
+  .au-resumo{background:linear-gradient(135deg,rgba(59,130,246,.12),rgba(139,92,246,.08));border:1px solid rgba(59,130,246,.3);border-radius:12px;padding:14px 18px;font-size:14px;color:#cdd8ea;line-height:1.6}
+  .au-resumo b{color:#fff}
+  .au-links{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .au-nav{display:flex;gap:8px;justify-content:space-between;margin-top:20px;padding-top:16px;border-top:1px solid var(--border);position:sticky;bottom:-26px;background:var(--panel);padding-bottom:4px}
+  .au-nav .btn{flex:1}
+  .mod-actions{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+  /* pomodoro widget */
+  .pomo-widget{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:12px;margin-top:14px;text-align:center}
+  .pomo-time{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .pomo-widget.run .pomo-time{-webkit-text-fill-color:#22c55e}
+  .pomo-widget.brk .pomo-time{-webkit-text-fill-color:#eab308}
+  .pomo-label{font-size:11px;color:var(--muted);margin:2px 0 8px}
+  .pomo-btns{display:flex;gap:6px;justify-content:center}
+  .pomo-btns .mini-btn{padding:6px 14px;font-size:14px}
+  /* review */
+  .review-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-top:8px}
+  .rev-card{background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:22px;cursor:pointer;transition:.2s;text-align:center}
+  .rev-card:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:var(--shadow)}
+  .rev-card .rc-ic{font-size:34px;margin-bottom:8px}
+  .rev-card h3{font-size:16px;margin-bottom:4px}
+  .rev-card p{font-size:12px;color:var(--muted)}
+  /* flashcard */
+  .flash-wrap{perspective:1200px;margin:10px 0 18px}
+  .flash{position:relative;min-height:240px;border-radius:16px;transition:transform .5s;transform-style:preserve-3d;cursor:pointer}
+  .flash.flip{transform:rotateY(180deg)}
+  .flash-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:30px;text-align:center;border:1px solid var(--border)}
+  .flash-front{background:linear-gradient(135deg,var(--panel2),var(--panel))}
+  .flash-back{background:linear-gradient(135deg,#1c2942,#162032);transform:rotateY(180deg)}
+  .flash-tag{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:14px}
+  .flash-q{font-size:19px;font-weight:600;line-height:1.4}
+  .flash-a{font-size:17px;color:#cde3ff;line-height:1.5}
+  .flash-hint{position:absolute;bottom:14px;font-size:11px;color:var(--muted2)}
+  .grade-btns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+  .grade-btn{padding:14px;border-radius:11px;border:none;cursor:pointer;font-family:inherit;font-weight:700;font-size:14px;color:#fff;transition:.15s}
+  .grade-btn:hover{transform:translateY(-2px)}
+  .grade-btn.g0{background:linear-gradient(135deg,#ef4444,#dc2626)}
+  .grade-btn.g1{background:linear-gradient(135deg,#3b82f6,#2563eb)}
+  .grade-btn.g2{background:linear-gradient(135deg,#22c55e,#16a34a)}
+  .grade-btn small{display:block;font-weight:400;font-size:11px;opacity:.85;margin-top:2px}
+  .rev-progress{height:7px;background:var(--bg);border-radius:10px;overflow:hidden;margin-bottom:16px}
+  .rev-progress>div{height:100%;background:var(--grad);transition:.3s}
+  .rev-count{text-align:center;color:var(--muted);font-size:13px;margin-bottom:14px}
+  /* quiz */
+  .quiz-q{font-size:18px;font-weight:600;margin-bottom:18px;line-height:1.45}
+  .quiz-opt{display:block;width:100%;text-align:left;background:var(--bg);border:1px solid var(--border);border-radius:11px;padding:14px 16px;margin-bottom:10px;color:var(--txt);cursor:pointer;font-family:inherit;font-size:14px;transition:.15s}
+  .quiz-opt:hover{border-color:var(--acc)}
+  .quiz-opt.correct{border-color:var(--green);background:rgba(34,197,94,.12)}
+  .quiz-opt.wrong{border-color:var(--red);background:rgba(239,68,68,.12)}
+  .quiz-opt:disabled{cursor:default}
+  .quiz-exp{background:var(--bg2);border-left:3px solid var(--acc);border-radius:8px;padding:12px 14px;font-size:13px;color:#cdd8ea;margin:6px 0 14px;display:none}
+  .quiz-exp.show{display:block;animation:fade .25s}
+  .quiz-timer{font-size:15px;font-weight:700;color:var(--yellow);font-variant-numeric:tabular-nums}
+  .quiz-result{text-align:center;padding:20px}
+  .quiz-result .big{font-size:54px;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  /* level / progress */
+  .level-card{display:flex;align-items:center;gap:22px;background:var(--panel);border:1px solid var(--border);border-radius:var(--r);padding:22px;margin-bottom:22px;flex-wrap:wrap}
+  .lvl-ring{width:80px;height:80px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--acc) var(--p,0%),var(--bg) 0);flex-shrink:0}
+  .lvl-ring .lvl-num{width:62px;height:62px;border-radius:50%;background:var(--panel);display:grid;place-items:center;font-size:26px;font-weight:800;color:var(--txt)}
+  .lvl-info{flex:1;min-width:180px}
+  .lvl-info h3{font-size:17px}
+  .streak-box{text-align:center;padding:0 10px}
+  .streak-fire{font-size:30px;filter:grayscale(1);opacity:.5}
+  .streak-box.active .streak-fire{filter:none;opacity:1;animation:flamep 1.5s ease-in-out infinite}
+  @keyframes flamep{50%{transform:scale(1.15)}}
+  .streak-n{font-size:24px;font-weight:800}
+  .streak-l{font-size:11px;color:var(--muted)}
+  .badges-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .badge-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:16px 12px;text-align:center;transition:.2s}
+  .badge-item.locked{opacity:.4;filter:grayscale(1)}
+  .badge-item.earned{border-color:var(--acc2);box-shadow:0 0 0 1px rgba(139,92,246,.3)}
+  .badge-ic{font-size:30px;margin-bottom:6px}
+  .badge-n{font-size:13px;font-weight:700}
+  .badge-d{font-size:11px;color:var(--muted);margin-top:2px}
+  .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+  .stat-line{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px}
+  .stat-line .v{font-size:22px;font-weight:800;color:var(--acc)}
+  .stat-line .k{font-size:12px;color:var(--muted);margin-top:2px}
+  /* heatmap */
+  .hm{display:flex;gap:3px}
+  .hm-col{display:flex;flex-direction:column;gap:3px}
+  .hm-cell{width:13px;height:13px;border-radius:3px;background:var(--bg2);border:1px solid var(--border)}
+  .hm-cell.l1{background:#1e3a5f} .hm-cell.l2{background:#2563eb} .hm-cell.l3{background:#3b82f6} .hm-cell.l4{background:#8b5cf6}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--panel2);
+    border:1px solid var(--acc);color:#fff;padding:13px 22px;border-radius:12px;font-size:14px;z-index:99;
+    box-shadow:var(--shadow);transition:.35s;opacity:0}
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+  @media(max-width:820px){
+    .app{grid-template-columns:1fr}
+    .sidebar{position:static;height:auto;flex-direction:row;flex-wrap:wrap;gap:6px}
+    .brand{width:100%}.sidebar-foot{flex-direction:row;width:100%}
+    .main{padding:18px}.stats{grid-template-columns:1fr 1fr}.row,.row3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="logo">C</div>
+      <div><h1>Jornada em C</h1><p>Lucas · Programação Estruturada</p></div>
+    </div>
+    <button class="nav-btn active" data-view="dashboard"><span class="ico">📊</span> Painel</button>
+    <button class="nav-btn" data-view="trilha"><span class="ico">🧭</span> Trilha animada</button>
+    <button class="nav-btn" data-view="roadmap"><span class="ico">🗺️</span> Roadmap</button>
+    <button class="nav-btn" data-view="exercises"><span class="ico">💻</span> Exercícios <span class="badge" id="b-ex">0</span></button>
+    <button class="nav-btn" data-view="lessons"><span class="ico">🎓</span> Aulas <span class="badge" id="b-le">0</span></button>
+    <button class="nav-btn" data-view="notes"><span class="ico">📝</span> Anotações <span class="badge" id="b-no">0</span></button>
+    <button class="nav-btn" data-view="helps"><span class="ico">🤖</span> Ajudas <span class="badge" id="b-he">0</span></button>
+    <button class="nav-btn" data-view="review"><span class="ico">🧪</span> Revisar <span class="badge" id="b-due">0</span></button>
+    <button class="nav-btn" data-view="progress"><span class="ico">🏆</span> Progresso</button>
+    <button class="nav-btn" data-view="difficulty"><span class="ico">🎯</span> Dificuldades</button>
+    <div class="pomo-widget" id="pomo">
+      <div class="pomo-time" id="pomo-time">25:00</div>
+      <div class="pomo-label" id="pomo-label">🍅 Foco</div>
+      <div class="pomo-btns">
+        <button class="mini-btn" id="pomo-start" onclick="pomoToggle()">▶</button>
+        <button class="mini-btn" onclick="pomoReset()">↺</button>
+      </div>
+    </div>
+    <div class="sidebar-foot">
+      <button class="mini-btn" id="export">⬇ Backup (exportar)</button>
+      <button class="mini-btn" id="import">⬆ Restaurar (importar)</button>
+      <input type="file" id="file" accept=".json" hidden>
+    </div>
+  </aside>
+
+  <main class="main">
+    <!-- DASHBOARD -->
+    <section class="view active" id="v-dashboard">
+      <div class="page-head"><h2>Painel de Progresso 📊</h2><p>Sua evolução na disciplina Programação Estruturada (IFRS)</p></div>
+      <div class="stats">
+        <div class="stat"><div class="num" id="s-prog">0%</div><div class="lbl">Roadmap concluído</div></div>
+        <div class="stat"><div class="num" id="s-exdone">0</div><div class="lbl">Exercícios resolvidos</div></div>
+        <div class="stat"><div class="num" id="s-le">0</div><div class="lbl">Aulas lidas</div></div>
+        <div class="stat"><div class="num" id="s-hard" style="font-size:16px">—</div><div class="lbl">Módulo mais difícil</div></div>
+      </div>
+      <div class="progress-card">
+        <h3>Progresso geral do roadmap <span id="p-txt">0 / 0 tópicos</span></h3>
+        <div class="bar"><div id="p-bar"></div></div>
+      </div>
+      <div class="progress-card">
+        <h3>💻 Exercícios resolvidos por módulo</h3>
+        <div id="ex-by-mod" class="diff-list"></div>
+      </div>
+      <div class="progress-card">
+        <h3>🔥 Onde focar agora (maior dificuldade)</h3>
+        <div id="focus-list" class="diff-list"></div>
+      </div>
+    </section>
+
+    <!-- TRILHA -->
+    <section class="view" id="v-trilha">
+      <div class="page-head"><h2>Trilha do Conhecimento em C 🧭</h2><p>Seu caminho de aprendizado, do primeiro <code>printf</code> ao projeto final. Clique em qualquer estação.</p></div>
+      <div class="helper-tip">🟢 dominado &nbsp;·&nbsp; 🟡 estudando &nbsp;·&nbsp; ⚪ a estudar &nbsp;·&nbsp; o <b>pulso animado</b> percorre o caminho já conquistado, e a estação que pisca é onde você está agora.</div>
+      <div class="legend-stats" id="trilha-stats"></div>
+      <div class="toolbar"><button class="btn" id="tour-btn" onclick="toggleTour()">🚶 Iniciar tour guiado</button>
+        <span id="tour-caption" style="color:var(--muted);font-size:14px;align-self:center"></span></div>
+      <div id="trilha-wrap" style="overflow-x:auto;border:1px solid var(--border);border-radius:var(--r);background:linear-gradient(180deg,var(--bg2),var(--bg));padding:10px"></div>
+    </section>
+
+    <!-- ROADMAP -->
+    <section class="view" id="v-roadmap">
+      <div class="page-head"><h2>Roadmap da Disciplina 🗺️</h2><p>Os módulos reais do seu curso. Marque o domínio, avalie a dificuldade e anote</p></div>
+      <div class="helper-tip">💡 Clique no <b>quadrado</b>: vazio → 🟡 estudando → ✅ dominado. As <b>bolinhas</b> = dificuldade (1 fácil → 5 difícil). O <b>📒</b> abre uma anotação do tópico. O contador mostra exercícios resolvidos do módulo.</div>
+      <div id="roadmap"></div>
+    </section>
+
+    <!-- EXERCISES -->
+    <section class="view" id="v-exercises">
+      <div class="page-head"><h2>Exercícios da Disciplina 💻</h2><p>Todas as 11 listas reais já cadastradas — resolva, salve seu código, rode no compilador e avalie</p></div>
+      <div class="toolbar">
+        <input class="search" id="ex-search" placeholder="🔍 Buscar exercício...">
+        <select class="search" id="ex-filter"><option value="">Todos os módulos</option></select>
+        <select class="search" id="ex-stat"><option value="">Todos status</option><option value="0">A fazer</option><option value="1">Resolvendo</option><option value="2">Resolvido</option></select>
+        <button class="btn sm" onclick="openCustom()">+ Meu exercício</button>
+      </div>
+      <div id="ex-list"></div>
+    </section>
+
+    <!-- LESSONS / APOSTILA -->
+    <section class="view" id="v-lessons">
+      <div class="page-head"><h2>Apostila de C 🎓</h2><p>Todo o conteúdo teórico, aula por aula. Leia, marque como concluída e acompanhe seu progresso.</p></div>
+      <div class="progress-card" style="padding:18px 22px">
+        <h3 style="margin-bottom:10px">Progresso de leitura <span id="au-prog">0 / 0 aulas</span></h3>
+        <div class="bar"><div id="au-bar"></div></div>
+      </div>
+      <div class="toolbar"><input class="search" id="le-search" placeholder="🔍 Buscar aula ou conteúdo..."></div>
+      <div id="le-list"></div>
+    </section>
+
+    <!-- NOTES -->
+    <section class="view" id="v-notes">
+      <div class="page-head"><h2>Anotações 📝</h2><p>Conceitos, macetes e resumos seus</p></div>
+      <div class="toolbar">
+        <input class="search" id="no-search" placeholder="🔍 Buscar anotação...">
+        <button class="btn" onclick="openNo()">+ Nova anotação</button>
+      </div>
+      <div id="no-list"></div>
+    </section>
+
+    <!-- HELPS -->
+    <section class="view" id="v-helps">
+      <div class="page-head"><h2>Ajudas do Claude 🤖</h2><p>Explicações e correções das conversas, guardadas para revisar</p></div>
+      <div class="helper-tip">💬 Quando eu te explicar algo no chat, peça <b>"me dá pronto pra colar na aba Ajudas"</b> e cole aqui.</div>
+      <div class="toolbar">
+        <input class="search" id="he-search" placeholder="🔍 Buscar ajuda...">
+        <select class="search" id="he-filter"><option value="">Todos os módulos</option></select>
+        <button class="btn" onclick="openHe()">+ Registrar ajuda</button>
+      </div>
+      <div id="he-list"></div>
+    </section>
+
+    <!-- DIFFICULTY -->
+    <section class="view" id="v-difficulty">
+      <div class="page-head"><h2>Mapa de Dificuldades 🎯</h2><p>Onde você mais trava — cruzando roadmap, dificuldade dos exercícios e autoavaliação</p></div>
+      <div class="progress-card"><h3>Ranking por dificuldade</h3><div id="diff-dash" class="diff-list"></div></div>
+      <div class="progress-card"><h3>⚠️ Exercícios marcados como difíceis (revisar)</h3><div id="hard-ex" class="diff-list"></div></div>
+    </section>
+
+    <!-- REVIEW (flashcards + quiz) -->
+    <section class="view" id="v-review">
+      <div class="page-head"><h2>Revisar 🧪</h2><p>Recordação ativa + repetição espaçada — a forma mais eficaz de fixar. Os cartões que você erra voltam mais cedo.</p></div>
+      <div class="stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="stat"><div class="num" id="r-due">0</div><div class="lbl">Para revisar hoje</div></div>
+        <div class="stat"><div class="num" id="r-total">0</div><div class="lbl">Total de cartões</div></div>
+        <div class="stat"><div class="num" id="r-streak">0</div><div class="lbl">🔥 Dias seguidos</div></div>
+      </div>
+      <div class="review-modes">
+        <div class="rev-card" onclick="startFlash('due')"><div class="rc-ic">⚡</div><h3>Revisão de hoje</h3><p id="rc-due-txt">cartões no ponto certo</p></div>
+        <div class="rev-card" onclick="openPicker('flash')"><div class="rc-ic">🃏</div><h3>Flashcards por módulo</h3><p>escolha um tema</p></div>
+        <div class="rev-card" onclick="openPicker('quiz')"><div class="rc-ic">❓</div><h3>Quiz</h3><p>múltipla escolha</p></div>
+        <div class="rev-card" onclick="openPicker('sim')"><div class="rc-ic">⏱️</div><h3>Simulado cronometrado</h3><p>teste sob pressão</p></div>
+      </div>
+    </section>
+
+    <!-- PROGRESS (gamificação) -->
+    <section class="view" id="v-progress">
+      <div class="page-head"><h2>Progresso e Conquistas 🏆</h2><p>Seu nível, sequência de estudos, metas e mapa de atividade</p></div>
+      <div class="level-card">
+        <div class="lvl-ring" id="lvl-ring"><div class="lvl-num" id="lvl-num">1</div></div>
+        <div class="lvl-info">
+          <h3 id="lvl-title">Nível 1 — Iniciante</h3>
+          <div class="bar" style="margin:8px 0"><div id="xp-bar"></div></div>
+          <p id="xp-txt" style="color:var(--muted);font-size:13px">0 / 120 XP</p>
+        </div>
+        <div class="streak-box"><div class="streak-fire" id="streak-fire">🔥</div><div class="streak-n" id="streak-n">0</div><div class="streak-l">dias seguidos</div></div>
+      </div>
+      <div class="progress-card">
+        <h3>🎯 Meta semanal <span id="goal-span">0 / 25</span></h3>
+        <div class="bar"><div id="goal-bar"></div></div>
+        <p style="color:var(--muted2);font-size:12px;margin-top:8px">Ações de estudo nesta semana (aulas, exercícios, flashcards, quizzes). <a href="#" onclick="editGoal();return false" style="color:var(--acc)">ajustar meta</a></p>
+      </div>
+      <div class="progress-card">
+        <h3>📅 Mapa de atividade</h3>
+        <div id="heatmap" style="overflow-x:auto"></div>
+      </div>
+      <div class="progress-card">
+        <h3>🏅 Conquistas <span id="badge-count" style="font-size:13px"></span></h3>
+        <div id="badges-grid" class="badges-grid"></div>
+      </div>
+      <div class="progress-card">
+        <h3>📊 Estatísticas</h3>
+        <div id="stats-grid" class="stats-grid"></div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<div class="overlay" id="overlay"><div class="modal" id="modal"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ CATÁLOGO DO CURSO (módulos + exercícios reais) ============ */
+const COURSE=[
+ {key:'intro',name:'Introdução, IDE e Tipos de Dados',icon:'🧱',color:'#3b82f6',
+  topics:['Estrutura de um programa (#include, main, return)','Compilar e rodar no Dev-C++','Tipos: int, float, double, char','Variáveis e constantes (const, #define)','printf e especificadores (%d %f %c %s)','scanf e o operador &','Operadores aritméticos, relacionais e lógicos'],
+  ex:[]},
+ {key:'math',name:'Funções Matemáticas (math.h)',icon:'➗',color:'#0ea5e9',
+  topics:['Incluir <math.h>','pow, sqrt, fabs','Funções trigonométricas','Compilar com -lm'],ex:[]},
+ {key:'seq',name:'Sequenciais',icon:'📋',color:'#06b6d4',ex:[
+  {t:'Média de três notas',s:'Faça um programa que receba três notas, calcule e mostre a média aritmética entre elas.'},
+  {t:'Aumento de salário',s:'Receba o nome de um funcionário, seu salário e o percentual de aumento. Calcule e mostre o nome, o valor do aumento e o novo salário.'},
+  {t:'Hipotenusa',s:'Receba os catetos de um triângulo, calcule e mostre a hipotenusa (h² = c1² + c2²).'},
+  {t:'Área do círculo',s:'Calcule e mostre a área de um círculo. Área = π * R².'},
+  {t:'Potências e raízes',s:'Solicite um número positivo maior que zero e mostre: a) o quadrado; b) o cubo; c) a raiz quadrada; d) a raiz cúbica.'},
+  {t:'Idade pelo ano',s:'Receba o ano de nascimento e o ano atual. Mostre: a) a idade (só pelo ano); b) quantos anos terá em 2050.'},
+  {t:'Custo do carro novo',s:'Receba o preço de fábrica, o % de lucro do distribuidor e o % de impostos. Mostre: a) o valor do lucro; b) o valor dos impostos; c) o preço final do veículo.'},
+  {t:'Tabela de votos',s:'Organize os dados em tabela. Os "Número de Votos" são digitados; "Percentual" e "Total" são calculados. Use %-20d, %f, %s, %d para alinhar (ex: printf("%-20d", VotosJoao)). Candidatos: João, Pedro, José.'},
+ ]},
+ {key:'if',name:'Decisão (if / else)',icon:'🔀',color:'#8b5cf6',ex:[
+  {t:'Nome curto',s:'Leia um nome e informe o tamanho dele, classificando como "nome curto" se tiver menos de 10 caracteres.'},
+  {t:'Dois nomes mesmo tamanho',s:'Leia dois nomes e diga se ambos têm o mesmo tamanho. Se não, diga o tamanho de cada um.'},
+  {t:'Bom dia Sr./Sra.',s:'Leia o nome e o sexo. Apresente "BOM DIA SR. <NOME>" se masculino, ou "BOM DIA SRA. <NOME>" se feminino.'},
+  {t:'Par ou ímpar',s:'Diga se um número N inteiro, lido do teclado, é PAR ou ÍMPAR.'},
+  {t:'Positivo, negativo ou nulo',s:'Determine se um número N é POSITIVO, NEGATIVO ou NULO.'},
+  {t:'Raiz ou quadrado',s:'Leia um número: imprima a raiz quadrada se positivo ou zero; o quadrado se negativo.'},
+  {t:'Divisível',s:'Determine se um número A é divisível por um número B (divisão inteira). Valores fornecidos pelo usuário.'},
+  {t:'Empréstimo (30%)',s:'A prestação não pode ultrapassar 30% do salário bruto. Leia salário bruto e valor da prestação e informe se o empréstimo pode ou não ser concedido.'},
+  {t:'Maior e menor de 4',s:'Dados quatro valores A, B, C e D, diga qual é o maior e qual é o menor.'},
+  {t:'Quadrado do menor / raiz do maior',s:'Leia dois números e mostre o quadrado do menor e a raiz quadrada do maior, se possível (exceto zero).'},
+  {t:'É triângulo?',s:'Receba A, B e C e informe se podem ser lados de um triângulo (cada lado menor que a soma dos outros dois). Não permita valores inválidos.'},
+  {t:'Excesso de velocidade',s:'Informe distância (km) e tempo (h). Determine se houve excesso de velocidade (limite 90 km/h).'},
+ ]},
+ {key:'switch',name:'Múltipla escolha (switch / case)',icon:'🔢',color:'#a855f7',ex:[
+  {t:'Peso nos planetas',s:'Leia um peso na Terra e o número de um planeta; imprima o peso nele. Gravidades relativas: 1 Mercúrio 0,37 · 2 Vênus 0,88 · 3 Marte 0,38 · 4 Júpiter 2,64 · 5 Saturno 1,15 · 6 Urano 1,17.'},
+  {t:'Conceito do aluno',s:'Leia o conceito (A,B,C,D) e a média. A:+1 · B:+0,5 · C:0 · D:-0,5. Mostre se passou (média final ≥ 7).'},
+  {t:'Calculadora por símbolo',s:'Leia dois números e a operação (+ - * / ~ exponenciação). Calcule e mostre o resultado adequado.'},
+  {t:'Condição de pagamento',s:'Calcule o valor a pagar conforme: 1=à vista dinheiro -10% · 2=à vista cartão -5% · 3=2x preço normal · 4=3x +10%.'},
+  {t:'Ingresso de cinema',s:'Calcule o ingresso por idade e dia da semana. <14 ou >65: meia (R$5), senão R$10. Ter/Qui (3/5): todos meia. Qua (4): todos R$4. Sex (6): >50 anos meia. Mostre idade, dia (por extenso, via switch) e valor.'},
+  {t:'Aumento por categoria',s:'Receba preço, categoria (1 limpeza, 2 alimentação, 3 vestuário) e situação (R/N). Calcule aumento (≤25: 5/8/10% · >25: 12/15/18%), novo preço e classificação (≤50 Barato · 50–120 Normal · ≥120 Caro).'},
+ ]},
+ {key:'for',name:'Repetição (for)',icon:'🔁',color:'#ec4899',ex:[
+  {t:'Sequências de números',s:'Imprima: 0 a 20; 20 a 0; pares de 2 a 20; ímpares de 2 a 20; de 40 a 70 dizendo se é par ou ímpar.'},
+  {t:'Resto 5 na divisão por 11',s:'Gere os números de 1000 a 1999 e escreva os que, divididos por 11, dão resto igual a 5.'},
+  {t:'Maior e menor de NUM',s:'Leia NUM e depois NUM inteiros positivos; imprima o maior e o menor.'},
+  {t:'Chico e Zé',s:'Chico: 1,50m +2cm/ano. Zé: 1,10m +4cm/ano. Calcule em quantos anos Zé fica maior que Chico.'},
+  {t:'Produto por somas',s:'Calcule A (real) * B (inteiro) usando somas sucessivas. Aceite só números positivos.'},
+  {t:'Asteriscos',s:'Leia 10 números (1 a 30). Para cada um, exiba uma linha com aquele número de asteriscos.'},
+  {t:'Conceitos de 25 alunos',s:'Leia matrícula e nota de 25 alunos. Conceito: 0–4,9 D · 5–6,9 C · 7–8,9 B · 9–10 A. Ao final, o percentual de cada conceito.'},
+  {t:'Fatoriais',s:'Leia N (quantos valores). Para cada valor lido, mostre o valor e o seu fatorial.'},
+  {t:'Alturas e sexo (50)',s:'Leia 50 fichas (altura e sexo: 1 M / 2 F). Calcule: maior e menor altura; média das mulheres; média da turma.'},
+  {t:'Duas maiores notas',s:'Leia 100 fichas (matrícula e nota). Determine as duas maiores notas e as matrículas. Sem notas repetidas.'},
+  {t:'Imposto de renda (10)',s:'Para 10 contribuintes (CPF, dependentes, renda): desconto 5% do salário mínimo por dependente. Alíquota: até 2 sm isento · 2–3 5% · 3–5 10% · 5–7 15% · >7 20%. Salário mínimo fornecido.'},
+ ]},
+ {key:'while',name:'Repetição (while / do-while)',icon:'♾️',color:'#f43f5e',ex:[
+  {t:'0 a N ou N a 0',s:'Leia N e mostre todos de 0 a N se positivo, ou de N a 0 se negativo.'},
+  {t:'3 maiores',s:'Leia N números e ao final mostre os 3 maiores digitados.'},
+  {t:'Soma até -1',s:'Leia positivos até digitar -1. Informe: quantos foram digitados; o somatório; quantos pares e quantos ímpares.'},
+  {t:'Médias com 0 para sair',s:'Leia valores até digitar 0. Mostre: média; qtd de positivos; qtd de negativos; percentual de cada.'},
+  {t:'Fatorial',s:'Calcule o fatorial de um número N inteiro positivo.'},
+  {t:'Maior nota + nome',s:'Informe quantas notas; leia cada nota e o nome do aluno. Ao final, mostre a maior nota e o nome de quem a obteve.'},
+  {t:'Pesquisa da prefeitura',s:'Leia salário e nº de filhos (fim com salário negativo). Calcule: média salarial; média de filhos; maior salário; % de pessoas com salário até R$2.000.'},
+ ]},
+ {key:'string',name:'Caracteres e Strings',icon:'🔤',color:'#f59e0b',
+  topics:['char e a tabela ASCII','Strings como vetor de char (\\0)','fgets e gets','Biblioteca <string.h>: strlen, strcpy, strcmp, strcat','Percorrer caractere a caractere'],ex:[]},
+ {key:'vetor',name:'Vetores (Arrays)',icon:'📊',color:'#eab308',ex:[
+  {t:'Vetor de 10 reais',s:'Leia um vetor de 10 reais e apresente os números separados por espaços.'},
+  {t:'Ordem inversa',s:'Leia um vetor de 10 posições e apresente-o na ordem inversa.'},
+  {t:'Pesquisa em vetor 20',s:'Pesquise se um valor fornecido está num vetor de inteiros de 20 posições (também fornecido).'},
+  {t:'Separar positivos e negativos',s:'Leia um vetor de 8 inteiros (+/-). Gere e mostre dois vetores: um só com positivos, outro só com negativos.'},
+  {t:'Dobro / triplo',s:'Leia um vetor de 30 inteiros e gere outro: posições pares = dobro, ímpares = triplo do original.'},
+  {t:'Estatísticas de 100',s:'Leia 100 inteiros. Imprima maior e menor (sem ordenar), o percentual de pares e a média.'},
+  {t:'Verificação interativa',s:'Leia um vetor de 20 inteiros positivos. Permita o usuário consultar valores (verifica se estão no vetor) até digitar um negativo.'},
+ ]},
+ {key:'matriz',name:'Matrizes',icon:'🔲',color:'#f97316',ex:[
+  {t:'Linha+coluna par',s:'Matriz 5x5 de inteiros; imprima só os valores cuja (linha+coluna) seja par.'},
+  {t:'Multiplica pelo maior',s:'Preencha M(2x2). Mostre R = M multiplicada pelo seu maior elemento.'},
+  {t:'Menor nota por aluno',s:'Matriz 10x3 (notas de 10 alunos em 3 provas). Mostre, por aluno, a prova com menor nota. Ao final, quantos tiveram a menor em cada prova.'},
+  {t:'Trocar linhas e colunas',s:'Matriz 10x10: troque a 2ª e a 8ª linha; troque a 6ª e a 9ª coluna; mostre o resultado.'},
+  {t:'Produtos x Lojas',s:'Vetor de 8 lojas; vetor de 4 produtos; matriz de preços. Mostre as relações (produto–loja) com preço ≤ R$120.'},
+  {t:'Vendas dos vendedores',s:'Matriz de vendas semanais (mês) de 5 vendedores. Calcule: total por vendedor; total por semana; total do mês.'},
+  {t:'Estoque em armazéns',s:'Matriz 5x3 (estoque de 3 produtos em 4 armazéns; última linha = custo). Calcule itens por armazém, maior estoque do produto 2, menor estoque, custo total por produto e por armazém.'},
+ ]},
+ {key:'func',name:'Funções',icon:'🧩',color:'#f97316',ex:[
+  {t:'Maior e menor (2 funções)',s:'Receba 3 valores. Crie duas funções: uma para o maior, outra para o menor número.'},
+  {t:'Função exponenciação',s:'Função que recebe base e expoente (inteiro positivo) por parâmetro e retorna a potência.'},
+  {t:'Função par()',s:'Leia uma série de inteiros e passe à função par(), que retorna 1 se par e 0 se ímpar.'},
+  {t:'Quadrado de asteriscos',s:'Função que exibe um quadrado sólido de asteriscos cujo lado é o parâmetro inteiro "lado".'},
+  {t:'Soma entre dois números',s:'Função que recebe dois positivos e retorna a soma dos n inteiros existentes entre eles.'},
+  {t:'Calculadora com 2 funções',s:'Função menu (mostra e lê a opção, retorna a operação) e função cálculo (recebe os dois valores e a operação, retorna o resultado). 1 soma · 2 subtração · 3 divisão · 4 multiplicação.'},
+  {t:'menor() e maior() em vetor',s:'Função menor(vetor, tam) retorna o menor elemento; função maior(vetor, tam) retorna o maior.'},
+  {t:'União de vetores',s:'Leia dois vetores (5 e 10 elementos) e gere um de 15 (união), usando funções.'},
+  {t:'Soma de matriz 4x3',s:'Leia 12 reais numa matriz 4x3. Função soma (recebe matriz, retorna somatório) e função imprime (recebe matriz). Main imprime o somatório.'},
+ ]},
+ {key:'ponteiro',name:'Ponteiros',icon:'🎯',color:'#ef4444',
+  topics:['Endereço e ponteiro (& e *)','Declarar e usar ponteiros','Passagem por referência','Ponteiros e vetores','Aritmética de ponteiros','Ponteiros e funções'],ex:[]},
+ {key:'struct',name:'Structs',icon:'📦',color:'#ef4444',ex:[
+  {t:'Struct aluno (10)',s:'Struct com nome, nota1, nota2, nota3, média. Leia 10 alunos (nome e 3 notas), calcule a média e ao final mostre todos os dados.'},
+  {t:'Aprovados / reprovados',s:'Incremente o ex.1: imprima também a quantidade de aprovados e reprovados (média ≥ 6,0).'},
+  {t:'Sexo e idade',s:'Incremente o ex.2 com sexo e idade. Responda: qtd de homens reprovados; qtd de mulheres com média ≥ 8,0; média de idade da turma.'},
+  {t:'Struct livro',s:'Struct livro (título, autor, ano, nº páginas, preço), vetor de 10. Leia e imprima a média de páginas e a quantidade de livros por autor.'},
+  {t:'Compra de livros',s:'Usando a struct livro, implemente a compra: dada a quantidade de um livro, informe o total. Permita comprar vários livros.'},
+  {t:'Cadastro de pessoas (80)',s:'Leia nome, idade e sexo de até 80 pessoas. Funções: inserir(), imprimir() (tabela), pesquisar_idade(), pesquisar_sexo().'},
+  {t:'Struct dentro de struct',s:'Struct pessoa (nome + struct data de nascimento), vetor de 20. Funções: Inserir, Calcular idade, Lista Idades, Lista Novos (metade mais nova).'},
+ ]},
+ {key:'aloc',name:'Alocação Dinâmica',icon:'🧠',color:'#dc2626',ex:[
+  {t:'Vetor dinâmico de 5',s:'a) Aloque um vetor de 5 inteiros; b) leia os 5; c) mostre-os; d) libere a memória.'},
+  {t:'Tamanho pelo usuário',s:'Leia o tamanho do vetor, aloque dinamicamente, leia os valores, imprima e mostre quantos pares e quantos ímpares.'},
+  {t:'Loteria',s:'Leia 6 números sorteados e 6 do bilhete. Conte os acertos, aloque um vetor do tamanho dos acertos, guarde-os e exiba sorteados e acertos.'},
+  {t:'Matriz dinâmica real',s:'Leia linhas e colunas, aloque dinamicamente uma matriz de reais, inicialize com valores do usuário e imprima com layout.'},
+  {t:'Matriz 2 colunas (>30)',s:'Preencha uma matriz de 2 colunas (linhas conforme a quantidade par dada). Mostre os números > 30 e suas posições, ou mensagem se não houver.'},
+  {t:'3 maiores da matriz NxM',s:'Leia N e M, crie e leia a matriz NxM, localize os três maiores e mostre suas linhas e colunas.'},
+ ]},
+ {key:'alocf',name:'Alocação Dinâmica com Funções',icon:'⚙️',color:'#b91c1c',ex:[
+  {t:'String sem vogais',s:'Receba o tamanho de uma string, chame uma função para alocá-la, leia o conteúdo e imprima a string sem as vogais.'},
+  {t:'pares/impares/soma por referência',s:'Vetor de 20 inteiros. Funções (só passagem por referência): pares() gera e imprime os pares; impares() idem; soma() retorna a soma por parâmetro.'},
+  {t:'realloc até negativo',s:'Leia números até um negativo, armazenando com realloc. Depois imprima o vetor lido.'},
+  {t:'malloc de double + rand',s:'Pergunte quantos valores (≥10), aloque com malloc, preencha os 10 primeiros com rand() entre 0 e 100 e exiba-os.'},
+  {t:'Busca em matriz dinâmica',s:'Aloque uma matriz de inteiros (dimensões do usuário) e leia. Função que recebe um valor e retorna 1 se está na matriz, 0 se não.'},
+  {t:'Matriz transposta',s:'Leia N e M, crie e leia matriz NxM, construa a transposta MxN e mostre as duas.'},
+  {t:'Elemento minimax',s:'O minimax é o menor elemento da linha onde está o maior elemento da matriz. Função que recebe a matriz e retorna o minimax e sua posição. Main imprime valor, linha e coluna.'},
+ ]},
+ {key:'arquivo',name:'Arquivos (Entrada/Saída em disco)',icon:'🗄️',color:'#14b8a6',
+  topics:['Abrir e fechar (fopen, fclose)','Modos: "r", "w", "a", "rb", "wb"','Escrever: fprintf, fputc, fwrite','Ler: fscanf, fgets, fread','Verificar fim de arquivo (feof) e erros','Persistir structs em arquivo binário'],ex:[]},
+ {key:'recursao',name:'Recursão',icon:'🌀',color:'#0d9488',
+  topics:['O que é caso base e caso recursivo','Fatorial recursivo','Fibonacci recursivo','Recursão vs. iteração (pilha de chamadas)','Recursão em vetores e strings'],ex:[]},
+ {key:'ordbusca',name:'Ordenação e Busca',icon:'🔍',color:'#6366f1',
+  topics:['Busca linear (sequencial)','Busca binária (vetor ordenado)','Bubble Sort','Selection Sort','Insertion Sort','Comparar eficiência (Big-O intuitivo)'],ex:[]},
+ {key:'lista',name:'Listas Encadeadas',icon:'🔗',color:'#8b5cf6',
+  topics:['Nó com struct + ponteiro next','Inserir no início e no fim','Percorrer a lista','Remover um nó','Liberar a lista (free de cada nó)'],ex:[]},
+ {key:'pilhafila',name:'Pilhas e Filas',icon:'🥞',color:'#a855f7',
+  topics:['Pilha (LIFO): push e pop','Fila (FIFO): enqueue e dequeue','Implementar com vetor','Implementar com lista encadeada','Aplicações práticas'],ex:[]},
+ {key:'modular',name:'Modularização, Header e Makefile',icon:'🏗️',color:'#f59e0b',
+  topics:['Separar código em .h e .c','Guardas de inclusão (#ifndef/#define/#endif)','Compilar vários arquivos (gcc a.c b.c)','Escrever um Makefile simples','Pré-processador (#define, macros)'],ex:[]},
+ {key:'boas',name:'Boas Práticas e Depuração',icon:'🛠️',color:'#10b981',
+  topics:['Compilar com -Wall -Wextra','Depurar com printf e com GDB','Evitar vazamentos (free de tudo)','Validar entrada nas bordas','Nomes claros e funções pequenas','Entender mensagens de erro comuns'],ex:[]},
+ {key:'projetos',name:'Projetos Finais',icon:'🏆',color:'#22c55e',ex:[
+  {t:'Calculadora completa',s:'Calculadora de terminal com menu (soma, subtração, multiplicação, divisão, potência, raiz), laço até o usuário sair e funções separadas para cada operação.'},
+  {t:'Sistema de cadastro (CRUD)',s:'Cadastro de pessoas/produtos em vetor de structs com inserir, listar, buscar, editar e remover. Use funções e um menu principal.'},
+  {t:'Jogo de adivinhação',s:'O programa sorteia um número (rand) e o jogador tenta adivinhar, recebendo dicas "maior/menor" até acertar. Conte as tentativas.'},
+  {t:'Forca no terminal',s:'Sorteie uma palavra de uma lista; o jogador chuta letras; mostre o progresso (_ _ a _) e limite os erros. Use strings e vetores.'},
+  {t:'Agenda persistida em arquivo',s:'Cadastro de contatos (nome, telefone, e-mail) salvo em arquivo, que carrega ao abrir e grava ao sair. Junta structs + arquivos.'},
+  {t:'Gerenciador de tarefas',s:'Lista de tarefas com prioridade e status (pendente/feita), usando lista encadeada ou vetor de structs, com persistência em arquivo.'},
+ ]},
+];
+
+/* ============ CONTEÚDO DO PROFESSOR "Sistema" (teoria + exemplos por nível) ============ */
+const TEACH={
+ intro:{theory:'Todo programa em C começa pela função main(). As bibliotecas são incluídas com #include. O printf mostra texto na tela e o scanf lê do teclado. Lembre: scanf precisa do & antes de variáveis simples.\n• int = inteiro · float/double = reais · char = um caractere\n• Sempre termine comandos com ;\n• return 0; indica que o programa terminou bem.',
+  examples:[
+   {lvl:'Básico',t:'Olá mundo',code:'#include <stdio.h>\n\nint main() {\n    printf("Ola, mundo!\\n");\n    return 0;\n}',ex:'O programa mais simples: imprime uma frase e encerra.'},
+   {lvl:'Intermediário',t:'Ler e somar',code:'#include <stdio.h>\n\nint main() {\n    int a, b;\n    printf("Digite dois numeros: ");\n    scanf("%d %d", &a, &b);\n    printf("Soma = %d\\n", a + b);\n    return 0;\n}',ex:'Lê dois inteiros (note o & no scanf) e mostra a soma.'},
+   {lvl:'Avançado',t:'Médias com double',code:'#include <stdio.h>\n\nint main() {\n    double n1, n2, n3;\n    scanf("%lf %lf %lf", &n1, &n2, &n3);\n    printf("Media = %.2f\\n", (n1 + n2 + n3) / 3);\n    return 0;\n}',ex:'Para double no scanf use %lf; no printf, %.2f limita a 2 casas decimais.'},
+  ]},
+ math:{theory:'A biblioteca <math.h> traz funções matemáticas prontas. Para compilar no Linux pode ser preciso "-lm" (gcc prog.c -lm).\n• pow(b,e) = potência · sqrt(x) = raiz quadrada · fabs(x) = módulo\n• ceil/floor = arredondar para cima/baixo · round = arredondar',
+  examples:[
+   {lvl:'Básico',t:'Raiz e potência',code:'#include <stdio.h>\n#include <math.h>\n\nint main() {\n    double x = 16;\n    printf("Raiz: %.1f\\n", sqrt(x));\n    printf("Cubo: %.0f\\n", pow(x, 3));\n    return 0;\n}',ex:'sqrt calcula a raiz; pow(x,3) eleva ao cubo.'},
+   {lvl:'Intermediário',t:'Hipotenusa',code:'#include <stdio.h>\n#include <math.h>\n\nint main() {\n    double c1, c2;\n    scanf("%lf %lf", &c1, &c2);\n    double h = sqrt(pow(c1,2) + pow(c2,2));\n    printf("Hipotenusa: %.2f\\n", h);\n    return 0;\n}',ex:'Aplica Pitágoras combinando pow e sqrt.'},
+  ]},
+ seq:{theory:'Programas sequenciais executam um comando após o outro, de cima para baixo, sem desvios. A receita é sempre: 1) ler dados, 2) calcular, 3) mostrar resultado.\n• Cuidado com divisão inteira: 5/2 dá 2; use 5.0/2 para 2.5.\n• Para alinhar saída em tabela use %-20d (alinha à esquerda em 20 colunas).',
+  examples:[
+   {lvl:'Básico',t:'Novo salário',code:'#include <stdio.h>\n\nint main() {\n    float salario, perc;\n    scanf("%f %f", &salario, &perc);\n    float aumento = salario * perc / 100;\n    printf("Aumento: %.2f\\n", aumento);\n    printf("Novo salario: %.2f\\n", salario + aumento);\n    return 0;\n}',ex:'Ler → calcular o aumento → mostrar. Note a porcentagem dividida por 100.'},
+   {lvl:'Intermediário',t:'Área do círculo',code:'#include <stdio.h>\n#define PI 3.14159\n\nint main() {\n    float r;\n    scanf("%f", &r);\n    printf("Area = %.2f\\n", PI * r * r);\n    return 0;\n}',ex:'#define cria uma constante PI reutilizável e legível.'},
+  ]},
+ if:{theory:'A estrutura de decisão escolhe um caminho conforme uma condição. if executa quando a condição é verdadeira; else é o "senão".\n• Operadores: == igual · != diferente · > < >= <= · && E · || OU · ! NÃO\n• Erro clássico: usar = (atribuição) no lugar de == (comparação).',
+  examples:[
+   {lvl:'Básico',t:'Par ou ímpar',code:'#include <stdio.h>\n\nint main() {\n    int n;\n    scanf("%d", &n);\n    if (n % 2 == 0)\n        printf("Par\\n");\n    else\n        printf("Impar\\n");\n    return 0;\n}',ex:'O resto da divisão por 2 (n%2) diz se é par.'},
+   {lvl:'Intermediário',t:'Positivo/negativo/nulo',code:'#include <stdio.h>\n\nint main() {\n    int n;\n    scanf("%d", &n);\n    if (n > 0) printf("Positivo\\n");\n    else if (n < 0) printf("Negativo\\n");\n    else printf("Nulo\\n");\n    return 0;\n}',ex:'else if encadeia várias decisões mutuamente exclusivas.'},
+   {lvl:'Avançado',t:'Maior de três',code:'#include <stdio.h>\n\nint main() {\n    int a, b, c;\n    scanf("%d %d %d", &a, &b, &c);\n    if (a >= b && a >= c) printf("Maior: %d\\n", a);\n    else if (b >= c)      printf("Maior: %d\\n", b);\n    else                  printf("Maior: %d\\n", c);\n    return 0;\n}',ex:'O && combina condições. Use >= para tratar empates.'},
+  ]},
+ switch:{theory:'switch é ideal quando você compara UMA variável com vários valores fixos. Cada case é um valor; break impede "cair" no próximo case; default é o "nenhum dos anteriores".\n• Funciona com int e char, não com faixas (intervalos) — para faixas, use if.',
+  examples:[
+   {lvl:'Básico',t:'Menu simples',code:'#include <stdio.h>\n\nint main() {\n    int op;\n    printf("1-Somar 2-Subtrair: ");\n    scanf("%d", &op);\n    switch (op) {\n        case 1: printf("Voce somou\\n"); break;\n        case 2: printf("Voce subtraiu\\n"); break;\n        default: printf("Opcao invalida\\n");\n    }\n    return 0;\n}',ex:'Sem break, a execução "vaza" para o próximo case.'},
+   {lvl:'Avançado',t:'Calculadora',code:'#include <stdio.h>\n\nint main() {\n    float a, b;\n    char op;\n    scanf("%f %c %f", &a, &op, &b);\n    switch (op) {\n        case \'+\': printf("%.2f\\n", a+b); break;\n        case \'-\': printf("%.2f\\n", a-b); break;\n        case \'*\': printf("%.2f\\n", a*b); break;\n        case \'/\': printf("%.2f\\n", b!=0 ? a/b : 0); break;\n        default: printf("Operador invalido\\n");\n    }\n    return 0;\n}',ex:'switch com char e validação de divisão por zero.'},
+  ]},
+ for:{theory:'O for repete um bloco um número conhecido de vezes. Tem 3 partes: for(início; condição; passo).\n• int i=0 (começa) ; i<n (enquanto) ; i++ (incrementa)\n• Use for quando souber QUANTAS vezes repetir.',
+  examples:[
+   {lvl:'Básico',t:'Contar de 1 a 10',code:'#include <stdio.h>\n\nint main() {\n    for (int i = 1; i <= 10; i++) {\n        printf("%d ", i);\n    }\n    printf("\\n");\n    return 0;\n}',ex:'i vai de 1 a 10, somando 1 a cada volta.'},
+   {lvl:'Intermediário',t:'Soma acumulada',code:'#include <stdio.h>\n\nint main() {\n    int n, soma = 0;\n    scanf("%d", &n);\n    for (int i = 1; i <= n; i++)\n        soma += i;\n    printf("Soma de 1 a %d = %d\\n", n, soma);\n    return 0;\n}',ex:'soma += i acumula. Padrão "acumulador" muito comum.'},
+   {lvl:'Avançado',t:'Fatorial',code:'#include <stdio.h>\n\nint main() {\n    int n;\n    long fat = 1;\n    scanf("%d", &n);\n    for (int i = 2; i <= n; i++)\n        fat *= i;\n    printf("%d! = %ld\\n", n, fat);\n    return 0;\n}',ex:'Acumulador de multiplicação; use long para números grandes.'},
+  ]},
+ while:{theory:'while repete ENQUANTO a condição for verdadeira — ideal quando você NÃO sabe quantas vezes (ex: até o usuário digitar -1). do-while executa pelo menos uma vez.\n• Cuidado com laço infinito: algo dentro do laço precisa mudar a condição.',
+  examples:[
+   {lvl:'Básico',t:'Contar com while',code:'#include <stdio.h>\n\nint main() {\n    int i = 1;\n    while (i <= 5) {\n        printf("%d ", i);\n        i++;\n    }\n    printf("\\n");\n    return 0;\n}',ex:'Não esqueça o i++, senão o laço nunca termina.'},
+   {lvl:'Intermediário',t:'Ler até -1',code:'#include <stdio.h>\n\nint main() {\n    int n, soma = 0;\n    scanf("%d", &n);\n    while (n != -1) {\n        soma += n;\n        scanf("%d", &n);\n    }\n    printf("Soma = %d\\n", soma);\n    return 0;\n}',ex:'Sentinela: -1 é a "senha" que encerra a leitura.'},
+   {lvl:'Avançado',t:'Validar com do-while',code:'#include <stdio.h>\n\nint main() {\n    int nota;\n    do {\n        printf("Nota (0-10): ");\n        scanf("%d", &nota);\n    } while (nota < 0 || nota > 10);\n    printf("Nota valida: %d\\n", nota);\n    return 0;\n}',ex:'do-while repete a pergunta até a entrada ser válida.'},
+  ]},
+ string:{theory:'Em C, uma string é um vetor de char terminado por \'\\0\' (caractere nulo). A <string.h> traz funções prontas.\n• strlen = tamanho · strcpy = copiar · strcmp = comparar (0 = iguais) · strcat = concatenar\n• Use fgets para ler frases com espaços (scanf("%s") para só uma palavra).',
+  examples:[
+   {lvl:'Básico',t:'Ler e medir nome',code:'#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char nome[50];\n    printf("Nome: ");\n    fgets(nome, 50, stdin);\n    printf("Tem %d caracteres\\n", (int)strlen(nome) - 1);\n    return 0;\n}',ex:'fgets lê a linha inteira; strlen conta os caracteres.'},
+   {lvl:'Avançado',t:'Contar vogais',code:'#include <stdio.h>\n#include <string.h>\n\nint main() {\n    char s[100];\n    fgets(s, 100, stdin);\n    int v = 0;\n    for (int i = 0; s[i] != \'\\0\'; i++) {\n        char c = s[i];\n        if (c==\'a\'||c==\'e\'||c==\'i\'||c==\'o\'||c==\'u\') v++;\n    }\n    printf("Vogais: %d\\n", v);\n    return 0;\n}',ex:'Percorre char a char até o \\0, contando vogais.'},
+  ]},
+ vetor:{theory:'Vetor (array) guarda vários valores do mesmo tipo numa única variável, acessados por índice (começa em 0!).\n• int v[5]; tem posições v[0] a v[4]\n• Acessar fora do tamanho = comportamento indefinido (bug perigoso).',
+  examples:[
+   {lvl:'Básico',t:'Preencher e mostrar',code:'#include <stdio.h>\n\nint main() {\n    int v[5];\n    for (int i = 0; i < 5; i++) scanf("%d", &v[i]);\n    for (int i = 0; i < 5; i++) printf("%d ", v[i]);\n    printf("\\n");\n    return 0;\n}',ex:'Um for para ler, outro para mostrar. Índice de 0 a 4.'},
+   {lvl:'Intermediário',t:'Maior do vetor',code:'#include <stdio.h>\n\nint main() {\n    int v[5], maior;\n    for (int i = 0; i < 5; i++) scanf("%d", &v[i]);\n    maior = v[0];\n    for (int i = 1; i < 5; i++)\n        if (v[i] > maior) maior = v[i];\n    printf("Maior: %d\\n", maior);\n    return 0;\n}',ex:'Comece supondo que o 1º é o maior e compare com os outros.'},
+  ]},
+ matriz:{theory:'Matriz é um vetor de duas dimensões (linhas × colunas). Precisa de dois índices e dois for aninhados.\n• int m[3][4]; tem 3 linhas e 4 colunas\n• m[i][j]: i = linha, j = coluna.',
+  examples:[
+   {lvl:'Intermediário',t:'Preencher matriz',code:'#include <stdio.h>\n\nint main() {\n    int m[2][3];\n    for (int i = 0; i < 2; i++)\n        for (int j = 0; j < 3; j++)\n            scanf("%d", &m[i][j]);\n    for (int i = 0; i < 2; i++) {\n        for (int j = 0; j < 3; j++)\n            printf("%d ", m[i][j]);\n        printf("\\n");\n    }\n    return 0;\n}',ex:'for externo = linhas, for interno = colunas. printf("\\n") quebra a linha.'},
+  ]},
+ func:{theory:'Funções dividem o programa em pedaços reutilizáveis. Têm: tipo de retorno, nome, parâmetros e corpo.\n• void = não retorna nada · return devolve um valor\n• Parâmetros são cópias (passagem por valor) — para alterar o original, use ponteiros.',
+  examples:[
+   {lvl:'Básico',t:'Função que soma',code:'#include <stdio.h>\n\nint soma(int a, int b) {\n    return a + b;\n}\n\nint main() {\n    printf("%d\\n", soma(3, 4));\n    return 0;\n}',ex:'soma recebe dois inteiros e devolve o resultado com return.'},
+   {lvl:'Avançado',t:'Função em vetor',code:'#include <stdio.h>\n\nint maior(int v[], int n) {\n    int m = v[0];\n    for (int i = 1; i < n; i++)\n        if (v[i] > m) m = v[i];\n    return m;\n}\n\nint main() {\n    int v[] = {3, 9, 2, 7};\n    printf("Maior: %d\\n", maior(v, 4));\n    return 0;\n}',ex:'Vetores são passados por referência (o nome é o endereço).'},
+  ]},
+ ponteiro:{theory:'Ponteiro é uma variável que guarda o ENDEREÇO de outra variável. É o coração do C.\n• & = "endereço de" · * = "conteúdo do endereço" (desreferenciar)\n• int *p = &x; agora *p é o mesmo que x.\n• Servem para passagem por referência, vetores e alocação dinâmica.',
+  examples:[
+   {lvl:'Básico',t:'Endereço e conteúdo',code:'#include <stdio.h>\n\nint main() {\n    int x = 10;\n    int *p = &x;\n    printf("x = %d\\n", x);\n    printf("*p = %d\\n", *p);\n    *p = 20;\n    printf("x agora = %d\\n", x);\n    return 0;\n}',ex:'Mudar *p muda x, porque p aponta para x.'},
+   {lvl:'Avançado',t:'Trocar por referência',code:'#include <stdio.h>\n\nvoid trocar(int *a, int *b) {\n    int tmp = *a;\n    *a = *b;\n    *b = tmp;\n}\n\nint main() {\n    int x = 1, y = 2;\n    trocar(&x, &y);\n    printf("x=%d y=%d\\n", x, y);\n    return 0;\n}',ex:'Passando endereços, a função altera as variáveis originais.'},
+  ]},
+ struct:{theory:'struct agrupa dados de tipos diferentes num único "registro" (ex: um aluno tem nome, idade e nota).\n• Acesse os campos com ponto: aluno.nome\n• typedef cria um apelido para escrever menos.\n• Combine com vetores para listas de registros.',
+  examples:[
+   {lvl:'Básico',t:'Struct aluno',code:'#include <stdio.h>\n\ntypedef struct {\n    char nome[30];\n    float media;\n} Aluno;\n\nint main() {\n    Aluno a;\n    scanf("%s %f", a.nome, &a.media);\n    printf("%s: %.1f\\n", a.nome, a.media);\n    return 0;\n}',ex:'typedef cria o tipo Aluno; acesse campos com ponto.'},
+   {lvl:'Avançado',t:'Vetor de structs',code:'#include <stdio.h>\n\ntypedef struct { char nome[30]; float nota; } Aluno;\n\nint main() {\n    Aluno turma[3];\n    for (int i = 0; i < 3; i++)\n        scanf("%s %f", turma[i].nome, &turma[i].nota);\n    for (int i = 0; i < 3; i++)\n        if (turma[i].nota >= 6)\n            printf("%s aprovado\\n", turma[i].nome);\n    return 0;\n}',ex:'Vetor de structs = uma tabela de registros.'},
+  ]},
+ aloc:{theory:'Alocação dinâmica reserva memória durante a execução, quando você não sabe o tamanho antecipadamente.\n• malloc(n*sizeof(tipo)) reserva · free(p) libera\n• Sempre verifique se malloc retornou NULL e sempre dê free no final (senão = vazamento de memória).',
+  examples:[
+   {lvl:'Intermediário',t:'Vetor dinâmico',code:'#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int n;\n    scanf("%d", &n);\n    int *v = malloc(n * sizeof(int));\n    if (v == NULL) return 1;\n    for (int i = 0; i < n; i++) v[i] = i * 2;\n    for (int i = 0; i < n; i++) printf("%d ", v[i]);\n    printf("\\n");\n    free(v);\n    return 0;\n}',ex:'O tamanho n vem do usuário; free devolve a memória ao final.'},
+  ]},
+ alocf:{theory:'Juntando alocação dinâmica + funções + ponteiros. Funções podem alocar e devolver vetores, ou receber ponteiro-para-ponteiro para alterar o original.\n• realloc redimensiona um bloco já alocado.\n• Passe o tamanho junto com o ponteiro — C não sabe o tamanho sozinho.',
+  examples:[
+   {lvl:'Avançado',t:'Função que aloca',code:'#include <stdio.h>\n#include <stdlib.h>\n\nint* criarVetor(int n) {\n    int *v = malloc(n * sizeof(int));\n    for (int i = 0; i < n; i++) v[i] = i;\n    return v;\n}\n\nint main() {\n    int n = 5;\n    int *v = criarVetor(n);\n    for (int i = 0; i < n; i++) printf("%d ", v[i]);\n    printf("\\n");\n    free(v);\n    return 0;\n}',ex:'A função aloca e retorna o ponteiro; quem chamou faz o free.'},
+  ]},
+ arquivo:{theory:'Arquivos permitem que os dados sobrevivam após o programa fechar (persistência).\n• fopen("dados.txt","w") abre para escrever ("r" ler, "a" anexar)\n• fprintf/fscanf funcionam como printf/scanf, mas no arquivo\n• SEMPRE feche com fclose. Verifique se fopen retornou NULL.',
+  examples:[
+   {lvl:'Básico',t:'Escrever em arquivo',code:'#include <stdio.h>\n\nint main() {\n    FILE *f = fopen("saida.txt", "w");\n    if (f == NULL) return 1;\n    fprintf(f, "Ola, arquivo!\\n");\n    fclose(f);\n    printf("Gravado!\\n");\n    return 0;\n}',ex:'Cria saida.txt e grava uma linha. fclose salva de verdade.'},
+   {lvl:'Avançado',t:'Ler linha a linha',code:'#include <stdio.h>\n\nint main() {\n    FILE *f = fopen("saida.txt", "r");\n    if (f == NULL) return 1;\n    char linha[100];\n    while (fgets(linha, 100, f) != NULL)\n        printf("%s", linha);\n    fclose(f);\n    return 0;\n}',ex:'fgets em laço lê até o fim do arquivo (retorna NULL no fim).'},
+  ]},
+ recursao:{theory:'Recursão é uma função que chama a si mesma. Precisa de: 1) caso base (quando parar) e 2) caso recursivo (chama-se com um problema menor).\n• Sem caso base = recursão infinita (estoura a pilha).\n• Elegante, mas às vezes o for é mais eficiente.',
+  examples:[
+   {lvl:'Básico',t:'Fatorial recursivo',code:'#include <stdio.h>\n\nint fat(int n) {\n    if (n <= 1) return 1;      // caso base\n    return n * fat(n - 1);     // caso recursivo\n}\n\nint main() {\n    printf("%d\\n", fat(5));\n    return 0;\n}',ex:'fat(5) = 5*fat(4) = ... até fat(1)=1. Repare no caso base.'},
+   {lvl:'Avançado',t:'Fibonacci',code:'#include <stdio.h>\n\nint fib(int n) {\n    if (n < 2) return n;\n    return fib(n-1) + fib(n-2);\n}\n\nint main() {\n    for (int i = 0; i < 10; i++) printf("%d ", fib(i));\n    printf("\\n");\n    return 0;\n}',ex:'Dois casos base (0 e 1) e duas chamadas recursivas.'},
+  ]},
+ ordbusca:{theory:'Algoritmos clássicos. Busca: encontrar um valor. Ordenação: colocar em ordem.\n• Busca linear: olha um por um (funciona em qualquer vetor)\n• Busca binária: só em vetor ORDENADO, corta pela metade a cada passo (rápida)\n• Bubble/Selection/Insertion sort: trocam elementos até ordenar.',
+  examples:[
+   {lvl:'Intermediário',t:'Busca binária',code:'#include <stdio.h>\n\nint buscaBin(int v[], int n, int alvo) {\n    int ini = 0, fim = n - 1;\n    while (ini <= fim) {\n        int meio = (ini + fim) / 2;\n        if (v[meio] == alvo) return meio;\n        if (v[meio] < alvo) ini = meio + 1;\n        else fim = meio - 1;\n    }\n    return -1;\n}\n\nint main() {\n    int v[] = {1,3,5,7,9,11};\n    printf("Pos: %d\\n", buscaBin(v, 6, 7));\n    return 0;\n}',ex:'Cada passo descarta metade do vetor. Exige vetor ordenado.'},
+   {lvl:'Avançado',t:'Bubble Sort',code:'#include <stdio.h>\n\nvoid bubble(int v[], int n) {\n    for (int i = 0; i < n-1; i++)\n        for (int j = 0; j < n-1-i; j++)\n            if (v[j] > v[j+1]) {\n                int t = v[j]; v[j] = v[j+1]; v[j+1] = t;\n            }\n}\n\nint main() {\n    int v[] = {5,2,8,1,9};\n    bubble(v, 5);\n    for (int i = 0; i < 5; i++) printf("%d ", v[i]);\n    printf("\\n");\n    return 0;\n}',ex:'Compara vizinhos e troca; os maiores "borbulham" para o fim.'},
+  ]},
+ lista:{theory:'Lista encadeada: cada nó guarda um dado e um ponteiro para o próximo nó. Cresce sem tamanho fixo.\n• O último nó aponta para NULL.\n• Mais flexível que vetor para inserir/remover, mas não tem acesso por índice direto.',
+  examples:[
+   {lvl:'Avançado',t:'Lista simples',code:'#include <stdio.h>\n#include <stdlib.h>\n\ntypedef struct No {\n    int dado;\n    struct No *prox;\n} No;\n\nint main() {\n    No *cabeca = NULL;\n    for (int i = 3; i >= 1; i--) {\n        No *n = malloc(sizeof(No));\n        n->dado = i;\n        n->prox = cabeca;\n        cabeca = n;            // insere no inicio\n    }\n    for (No *p = cabeca; p != NULL; p = p->prox)\n        printf("%d ", p->dado);\n    printf("\\n");\n    return 0;\n}',ex:'-> acessa campos via ponteiro. Inserção no início é O(1).'},
+  ]},
+ pilhafila:{theory:'Pilha (LIFO): o último a entrar é o primeiro a sair (como pratos empilhados). Fila (FIFO): o primeiro a entrar é o primeiro a sair (como fila de banco).\n• Pilha: push (empilha) / pop (desempilha)\n• Fila: enqueue (entra no fim) / dequeue (sai do início).',
+  examples:[
+   {lvl:'Intermediário',t:'Pilha com vetor',code:'#include <stdio.h>\n#define MAX 100\n\nint pilha[MAX], topo = -1;\n\nvoid push(int x) { pilha[++topo] = x; }\nint pop() { return pilha[topo--]; }\n\nint main() {\n    push(1); push(2); push(3);\n    printf("%d ", pop());   // 3\n    printf("%d ", pop());   // 2\n    printf("\\n");\n    return 0;\n}',ex:'topo controla o fim. Sai sempre o último que entrou.'},
+  ]},
+ modular:{theory:'Projetos grandes se dividem em vários arquivos: .h (declarações) e .c (implementação). Isso organiza e acelera a compilação.\n• Guarda de inclusão evita incluir o mesmo header duas vezes.\n• Compile junto: gcc main.c funcoes.c -o programa\n• Um Makefile automatiza a compilação.',
+  examples:[
+   {lvl:'Intermediário',t:'Header (.h)',code:'/* mat.h */\n#ifndef MAT_H\n#define MAT_H\n\nint soma(int a, int b);\nint mult(int a, int b);\n\n#endif',ex:'O .h declara as funções; o #ifndef é a guarda de inclusão.'},
+   {lvl:'Avançado',t:'Makefile simples',code:'programa: main.c mat.c\n\tgcc -Wall main.c mat.c -o programa\n\nclean:\n\trm -f programa',ex:'Digite "make" para compilar. A linha de comando começa com TAB.'},
+  ]},
+ boas:{theory:'Hábitos de quem programa bem em C:\n• Compile com gcc -Wall -Wextra para ver TODOS os avisos.\n• Inicialize variáveis antes de usar.\n• Todo malloc tem um free. Toda fopen tem um fclose.\n• Nomes claros, funções curtas, uma responsabilidade cada.\n• Erros comuns: segmentation fault (ponteiro/índice inválido), esquecer & no scanf.',
+  examples:[
+   {lvl:'Básico',t:'Validar entrada do scanf',code:'#include <stdio.h>\n\nint main() {\n    int n;\n    printf("Numero: ");\n    if (scanf("%d", &n) != 1) {\n        printf("Entrada invalida!\\n");\n        return 1;\n    }\n    printf("Ok: %d\\n", n);\n    return 0;\n}',ex:'scanf retorna quantos valores leu — verifique para evitar bugs.'},
+   {lvl:'Avançado',t:'Padrão malloc seguro',code:'#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    int *v = malloc(10 * sizeof(int));\n    if (v == NULL) {\n        printf("Sem memoria!\\n");\n        return 1;\n    }\n    /* ... usa v ... */\n    free(v);\n    v = NULL;   // evita uso acidental depois do free\n    return 0;\n}',ex:'Checar NULL e zerar o ponteiro após free são boas defesas.'},
+  ]},
+ projetos:{theory:'Hora de juntar tudo! Um bom projeto final usa: menu em laço, funções separadas, structs para os dados, vetores ou listas, e arquivos para persistir.\n• Comece simples e vá incrementando (versão 1, versão 2...).\n• Teste cada função isoladamente antes de juntar.',
+  examples:[
+   {lvl:'Intermediário',t:'Esqueleto de menu',code:'#include <stdio.h>\n\nint main() {\n    int op;\n    do {\n        printf("\\n1-Inserir 2-Listar 0-Sair: ");\n        scanf("%d", &op);\n        switch (op) {\n            case 1: printf("(inserir)\\n"); break;\n            case 2: printf("(listar)\\n"); break;\n            case 0: printf("Tchau!\\n"); break;\n            default: printf("Invalido\\n");\n        }\n    } while (op != 0);\n    return 0;\n}',ex:'Base de quase todo sistema: menu em do-while + switch.'},
+  ]},
+};
+
+/* ============ RACIOCÍNIO PASSO A PASSO (mesma ordem dos examples de cada módulo) ============ */
+const STEPS={
+ intro:[
+  ['Quero apenas mostrar um texto, então preciso da função printf.','printf está em <stdio.h>, por isso incluo a biblioteca no topo.','Todo programa precisa de int main() — é por onde a execução começa.','Dentro de main, chamo printf com a frase e \\n para quebrar a linha.','return 0; avisa que terminou sem erros.'],
+  ['Preciso guardar dois números: declaro int a, b.','Aviso o usuário com printf e leio com scanf.','No scanf uso %d (inteiro) e o & para passar o ENDEREÇO das variáveis.','Para somar, basta a + b dentro do printf.'],
+  ['Como são notas, uso double (números com casas decimais).','No scanf, double pede %lf (L de long float).','A média é a soma dividida por 3 — coloco entre parênteses para garantir a ordem.','No printf uso %.2f para mostrar com 2 casas decimais.'],
+ ],
+ math:[
+  ['Funções matemáticas prontas estão em <math.h>: incluo a biblioteca.','sqrt(x) já devolve a raiz quadrada.','pow(x,3) eleva x ao cubo — mais limpo que x*x*x.','Mostro os dois resultados formatados.'],
+  ['Pitágoras: h² = c1² + c2², então h = raiz da soma dos quadrados.','Calculo cada cateto ao quadrado com pow(c,2).','Somo os dois e aplico sqrt no total.','Guardo em h e imprimo com 2 casas.'],
+ ],
+ seq:[
+  ['Programa sequencial: ler → calcular → mostrar.','Leio salário e percentual com scanf.','O aumento é salário × percentual ÷ 100 (porque é %).','O novo salário é o salário + o aumento.'],
+  ['π é uma constante, então uso #define PI para deixar o código legível.','Leio o raio.','Área do círculo = π × r². Escrevo PI * r * r.','Imprimo com 2 casas decimais.'],
+ ],
+ if:[
+  ['"Par" significa divisível por 2 — o resto da divisão por 2 é zero.','Calculo n % 2 (operador resto).','Se o resto == 0, é par; senão (else), é ímpar.'],
+  ['Tenho 3 possibilidades: maior, menor ou igual a zero.','Testo primeiro n > 0 (positivo).','Se não, testo n < 0 (negativo) com else if.','O que sobra (else) só pode ser zero.'],
+  ['Quero o maior entre a, b, c.','Suponho que a é o maior e confirmo: a >= b E a >= c (uso &&).','Se falhar, testo se b é o maior (b >= c).','Se nada deu certo, sobra c. Uso >= para não quebrar em empates.'],
+ ],
+ switch:[
+  ['O usuário escolhe uma opção numérica fixa → switch é ideal.','Leio a opção e abro o switch(op).','Cada case trata um valor; coloco break para não "vazar" para o próximo.','default cobre qualquer opção inválida.'],
+  ['Vou comparar um caractere de operação (+, -, *, /) → switch com char.','Leio número, operador e número (%f %c %f).','Cada case faz uma conta e imprime o resultado.','Na divisão, testo se b != 0 antes, para não dividir por zero.'],
+ ],
+ for:[
+  ['Sei exatamente quantas vezes repetir (10) → uso for.','Começo i em 1, repito enquanto i <= 10, somo 1 (i++).','A cada volta, imprimo o i.','Depois do laço, quebro a linha.'],
+  ['Quero somar 1+2+...+n → preciso de um "acumulador".','Crio soma = 0 antes do laço (zero é o ponto de partida).','O for vai de 1 até n; a cada volta faço soma += i.','No fim, soma tem o total.'],
+  ['Fatorial é 1×2×3×...×n → acumulador de MULTIPLICAÇÃO.','Começo fat = 1 (elemento neutro da multiplicação).','O for vai de 2 até n, fazendo fat *= i.','Uso long porque fatorial cresce muito rápido.'],
+ ],
+ while:[
+  ['Vou repetir, mas controlo a variável na mão → while.','Inicializo i = 1 antes do laço.','Enquanto i <= 5, imprimo e — importante — faço i++.','Sem o i++ o laço nunca termina (loop infinito).'],
+  ['Não sei quantos números virão; paro num valor "sentinela" (-1).','Leio o primeiro número ANTES do while.','Enquanto não for -1, acumulo e leio o próximo.','Quando vier -1, o laço para e mostro a soma.'],
+  ['Quero garantir uma entrada válida → preciso perguntar pelo menos uma vez.','do-while executa o corpo primeiro, depois testa.','Peço a nota dentro do do.','Repito enquanto a nota estiver fora de 0 a 10.'],
+ ],
+ string:[
+  ['Nome pode ter espaços → uso fgets (scanf %s pararia no espaço).','Declaro um vetor char nome[50].','fgets lê a linha toda (até 50 chars).','strlen conta os caracteres; subtraio 1 por causa do \\n que o fgets guarda.'],
+  ['Preciso olhar cada letra da frase → percorrer a string char a char.','Leio a frase com fgets.','O for vai até encontrar o \'\\0\' (fim da string).','Para cada char, se for vogal, incremento o contador.'],
+ ],
+ vetor:[
+  ['Vou guardar 5 valores do mesmo tipo → vetor int v[5].','Um for de 0 a 4 lê cada posição (índice começa em 0!).','No scanf uso &v[i] para o endereço de cada posição.','Outro for percorre e imprime tudo.'],
+  ['Procuro o maior elemento → técnica do "campeão provisório".','Leio o vetor.','Assumo que v[0] é o maior.','Percorro do índice 1 em diante; se achar alguém maior, atualizo. No fim tenho o maior.'],
+ ],
+ matriz:[
+  ['Matriz = tabela (linhas × colunas) → preciso de DOIS for aninhados.','For externo percorre as linhas (i), o interno as colunas (j).','Leio cada m[i][j] com scanf.','Para mostrar, repito os dois for e dou printf("\\n") ao fim de cada linha.'],
+ ],
+ func:[
+  ['Quero reaproveitar a soma → crio uma função soma(a,b).','Defino o tipo de retorno (int), o nome e os parâmetros.','Dentro, return a + b devolve o resultado.','Na main, chamo soma(3,4) e imprimo.'],
+  ['A função precisa trabalhar sobre um vetor → passo o vetor e o tamanho.','Em C, ao passar um vetor, passo na verdade o endereço (referência).','Dentro, uso a técnica do campeão para achar o maior.','Retorno o maior; a main só chama e imprime.'],
+ ],
+ ponteiro:[
+  ['Quero ver a relação entre variável e endereço.','Crio x e um ponteiro p que recebe &x (o endereço de x).','*p (conteúdo do endereço) é o mesmo valor de x.','Ao fazer *p = 20, altero x indiretamente — provo que p "aponta" para x.'],
+  ['Função normal não troca os originais (recebe cópias) → uso ponteiros.','A função recebe int *a e int *b (endereços).','Uso uma variável tmp para não perder um valor durante a troca.','Passo &x e &y na chamada; assim a troca afeta as variáveis reais.'],
+ ],
+ struct:[
+  ['Um aluno tem dados de tipos diferentes (nome texto, média número) → struct.','Uso typedef para criar o tipo Aluno e escrever menos.','Declaro uma variável a do tipo Aluno.','Acesso os campos com ponto: a.nome, a.media.'],
+  ['Vários alunos → um vetor de structs (uma tabela).','Declaro Aluno turma[3].','Um for lê nome e nota de cada aluno (turma[i].campo).','Outro for percorre e mostra os aprovados (nota >= 6).'],
+ ],
+ aloc:[
+  ['Não sei o tamanho na hora de programar → alocação dinâmica.','Leio n e chamo malloc(n * sizeof(int)) para reservar o espaço exato.','Sempre confiro se o malloc não falhou (retornou NULL).','Uso o vetor normalmente e, no fim, free(v) para devolver a memória.'],
+ ],
+ alocf:[
+  ['Quero uma função que cria e devolve um vetor pronto.','A função aloca com malloc, preenche e retorna o ponteiro (int*).','Quem chama recebe o ponteiro e usa.','Regra de ouro: quem usa é quem dá o free no final.'],
+ ],
+ arquivo:[
+  ['Quero gravar dados em disco → abro um arquivo com fopen no modo "w" (escrita).','Sempre testo se fopen deu certo (não retornou NULL).','fprintf escreve no arquivo igual ao printf, mas mandando o ponteiro f.','fclose é o que realmente salva e fecha o arquivo.'],
+  ['Agora quero ler o que gravei → abro no modo "r" (leitura).','Confiro o NULL de novo.','fgets em um while lê linha por linha.','Quando fgets retorna NULL, acabou o arquivo: fecho com fclose.'],
+ ],
+ recursao:[
+  ['Fatorial se define em termos de si mesmo: n! = n × (n-1)!','Primeiro defino o CASO BASE: se n <= 1, retorno 1 (senão seria infinito).','Senão, retorno n * fat(n-1) — o problema fica menor a cada chamada.','fat(5) chama fat(4), que chama fat(3)... até o caso base.'],
+  ['Fibonacci: cada termo é a soma dos dois anteriores.','Tenho DOIS casos base: fib(0)=0 e fib(1)=1 (por isso n < 2 retorna n).','Caso recursivo: fib(n-1) + fib(n-2).','Na main, um for imprime os 10 primeiros termos.'],
+ ],
+ ordbusca:[
+  ['O vetor está ORDENADO → posso cortar pela metade (busca binária).','Marco início e fim do trecho de busca.','Olho o meio: se for o alvo, achei; se o meio é menor, descarto a metade de baixo; senão a de cima.','Repito até achar ou o trecho zerar (retorno -1 = não achou).'],
+  ['Quero ordenar trocando vizinhos fora de ordem → Bubble Sort.','For externo controla quantas "passadas" faço.','For interno compara cada par vizinho; se v[j] > v[j+1], troco.','A cada passada o maior "borbulha" para o fim; ao terminar, está ordenado.'],
+ ],
+ lista:[
+  ['Quero uma estrutura que cresce sem tamanho fixo → lista encadeada.','Defino o nó: um dado + um ponteiro struct No *prox para o próximo.','Começo a lista vazia (cabeca = NULL).','Para inserir no início: o novo nó aponta para a antiga cabeça e vira a nova cabeça. Depois percorro com p = p->prox até NULL.'],
+ ],
+ pilhafila:[
+  ['Pilha é LIFO (último a entrar, primeiro a sair) → controlo um índice "topo".','Uso um vetor e topo começa em -1 (vazia).','push: incremento o topo e guardo (pilha[++topo]).','pop: devolvo o do topo e diminuo (pilha[topo--]). Sai sempre o último que entrou.'],
+ ],
+ modular:[
+  ['Quero separar declaração de implementação → crio um .h só com os protótipos.','Coloco a guarda #ifndef/#define ... #endif para o header não ser incluído duas vezes.','Declaro as funções (sem corpo) no .h.','O .c correspondente terá a implementação; quem precisar dá #include "mat.h".'],
+  ['Compilar vários arquivos na mão cansa → automatizo com Makefile.','Defino o alvo "programa" e do que ele depende (os .c).','A linha de comando (começando com TAB!) chama o gcc.','Crio também um alvo clean para apagar o executável. Rodo com "make".'],
+ ],
+ boas:[
+  ['Entrada do usuário pode vir errada → não confio cegamente no scanf.','scanf retorna QUANTOS valores conseguiu ler.','Se não leu 1 valor (!= 1), aviso o erro e encerro com return 1.','Só sigo se a leitura foi válida — evita bugs silenciosos.'],
+  ['Memória dinâmica exige disciplina para não vazar nem quebrar.','Depois do malloc, testo se voltou NULL (sem memória).','Uso o vetor normalmente.','No fim: free(v) libera, e v = NULL evita usar um ponteiro "morto" por engano.'],
+ ],
+ projetos:[
+  ['Quase todo sistema tem um menu que repete até o usuário sair → do-while + switch.','Uso do-while para o menu aparecer pelo menos uma vez.','Cada case chama uma parte do programa (inserir, listar...).','A opção 0 encerra; o while(op != 0) mantém o ciclo. Depois é só preencher cada case com funções.'],
+ ],
+};
+
+/* ============ APOSTILA — AULAS TEÓRICAS (uma por módulo) ============ */
+/* cada seção: {h: título, p: texto (\n p/ parágrafos), code?: trecho C, box?: 'atenção'|'dica'} */
+const AULAS={
+ intro:{dur:'8 min',sections:[
+  {h:'O que é a linguagem C',p:'C é uma linguagem de programação criada nos anos 1970 por Dennis Ritchie. É a "mãe" de muitas linguagens modernas (C++, Java, C#, JavaScript). É rápida, próxima do hardware e usada em sistemas operacionais, jogos, microcontroladores e bancos de dados.\nAprender C te dá uma base sólida: você entende de verdade o que acontece na memória, e isso facilita qualquer outra linguagem depois.'},
+  {h:'A estrutura de um programa',p:'Todo programa em C tem o mesmo esqueleto:\n• #include — inclui bibliotecas (conjuntos de funções prontas).\n• int main() — a função principal; a execução SEMPRE começa por ela.\n• { } — delimitam o corpo (bloco) de comandos.\n• return 0; — encerra avisando que deu tudo certo.',code:'#include <stdio.h>\n\nint main() {\n    printf("Ola, mundo!\\n");\n    return 0;\n}'},
+  {h:'printf — mostrar na tela',p:'printf escreve texto na tela. O \\n é uma "quebra de linha" (pula para a próxima linha). Tudo que está entre aspas é mostrado literalmente, exceto os códigos especiais (%d, \\n, etc).'},
+  {h:'Regras de ouro da sintaxe',p:'• Todo comando termina com ponto e vírgula ;\n• C diferencia maiúsculas de minúsculas: Main ≠ main.\n• Indente (use espaços/Tab) para o código ficar legível — o computador ignora, mas você (e o professor) agradece.',box:'atenção'},
+  {h:'Como compilar e rodar',p:'O computador não entende C diretamente — um COMPILADOR (Dev-C++, GCC) traduz seu código para linguagem de máquina, gerando um executável (.exe).\nNo Dev-C++: F9 compila, F10 roda, F11 faz os dois. Erros de compilação aparecem embaixo — leia a primeira mensagem com calma, geralmente o erro está nela ou na linha de cima.'},
+ ],resumo:'Todo programa começa em main(), usa #include para bibliotecas, printf para mostrar e termina com return 0. Comandos terminam em ; e o código precisa ser compilado antes de rodar.'},
+
+ math:{dur:'5 min',sections:[
+  {h:'Tipos de dados numéricos',p:'Antes da matemática, escolha o tipo certo:\n• int — números inteiros (-3, 0, 42).\n• float / double — números reais com casas decimais (3.14). double é mais preciso.\n• char — um único caractere (\'A\', \'7\').\nO tipo define quanta memória a variável ocupa e o que ela aceita guardar.'},
+  {h:'Operadores aritméticos',p:'+ soma · - subtração · * multiplicação · / divisão · % resto da divisão.\nAtenção à divisão: entre inteiros, 7/2 dá 3 (corta as casas!). Para o resultado real 3.5, pelo menos um número precisa ser real: 7.0/2.',box:'atenção'},
+  {h:'A biblioteca math.h',p:'Para contas mais avançadas, inclua #include <math.h>. Principais funções:\n• sqrt(x) — raiz quadrada\n• pow(base, expoente) — potência\n• fabs(x) — valor absoluto (módulo) de reais\n• ceil(x) / floor(x) — arredonda para cima / para baixo\n• round(x) — arredonda para o mais próximo',code:'#include <math.h>\n\ndouble h = sqrt(pow(c1,2) + pow(c2,2)); // hipotenusa'},
+ ],resumo:'Escolha o tipo certo (int/float/double/char), cuidado com divisão inteira, e use <math.h> (sqrt, pow, fabs) para contas avançadas.'},
+
+ seq:{dur:'5 min',sections:[
+  {h:'O que é um algoritmo sequencial',p:'É a forma mais simples de programa: os comandos são executados um após o outro, de cima para baixo, sem desvios nem repetições. A receita é quase sempre a mesma:\n1) ENTRADA — ler os dados (scanf)\n2) PROCESSAMENTO — fazer as contas\n3) SAÍDA — mostrar o resultado (printf)'},
+  {h:'Lendo dados com scanf',p:'scanf lê o que o usuário digita e guarda numa variável. Use o especificador do tipo e — fundamental — o & antes da variável (o & significa "endereço de"):\n• %d para int · %f para float · %lf para double · %c para char · %s para string.',code:'int idade;\nscanf("%d", &idade);   // o & é obrigatório aqui!'},
+  {h:'Formatando a saída',p:'No printf você controla como o número aparece:\n• %.2f — 2 casas decimais (ótimo para dinheiro)\n• %-20d — alinha à esquerda ocupando 20 colunas (útil para tabelas).\nDentro das aspas, cada % é substituído pela variável correspondente, na ordem.'},
+  {h:'Constantes com #define',p:'Quando um valor nunca muda (como π), defina uma constante no topo. Fica mais legível e fácil de manter:',code:'#define PI 3.14159\n// ... area = PI * r * r;'},
+ ],resumo:'Programa sequencial = ler (scanf com &), calcular e mostrar (printf). Cuidado com divisão inteira e use %.2f para formatar reais.'},
+
+ if:{dur:'7 min',sections:[
+  {h:'Tomando decisões',p:'Até agora o programa fazia tudo sempre. A estrutura de decisão permite escolher caminhos: "SE tal condição for verdadeira, faça isto; SENÃO, faça aquilo".'},
+  {h:'if, else if, else',p:'• if (condição) — executa o bloco se a condição for verdadeira.\n• else — o "senão", quando a condição é falsa.\n• else if — testa outra condição quando a anterior falhou (encadeamento).',code:'if (nota >= 7)\n    printf("Aprovado\\n");\nelse if (nota >= 5)\n    printf("Recuperacao\\n");\nelse\n    printf("Reprovado\\n");'},
+  {h:'Operadores de comparação',p:'== igual · != diferente · > maior · < menor · >= maior ou igual · <= menor ou igual.\nO maior erro de iniciante: usar = (atribuição) no lugar de == (comparação). if(x = 5) está ERRADO; o certo é if(x == 5).',box:'atenção'},
+  {h:'Operadores lógicos',p:'Para combinar condições:\n• && (E) — verdadeiro só se AMBAS forem verdadeiras: if(idade >= 18 && temCarteira)\n• || (OU) — verdadeiro se PELO MENOS UMA for: if(dia==6 || dia==7)\n• ! (NÃO) — inverte: if(!aprovado)'},
+  {h:'Cuidado com o bloco { }',p:'Se o if tem mais de um comando, use chaves { }. Sem chaves, só a PRÓXIMA linha pertence ao if — fonte de bugs silenciosos.',box:'dica'},
+ ],resumo:'if/else if/else escolhem caminhos. Use == (não =) para comparar, && || ! para combinar condições, e { } quando houver mais de um comando.'},
+
+ switch:{dur:'5 min',sections:[
+  {h:'Quando usar switch',p:'O switch é uma alternativa ao if encadeado quando você compara UMA variável com vários valores fixos (um menu, um código, uma letra). Fica mais limpo que muitos else if.'},
+  {h:'Anatomia do switch',p:'• switch(variável) — a variável a ser testada (int ou char).\n• case valor: — um caminho para cada valor possível.\n• break; — encerra o case (sem ele, a execução "vaza" para o próximo!).\n• default: — o "nenhum dos anteriores".',code:'switch (op) {\n    case 1: printf("Soma\\n"); break;\n    case 2: printf("Subtrai\\n"); break;\n    default: printf("Invalido\\n");\n}'},
+  {h:'A armadilha do break',p:'Esquecer o break faz o programa executar o case escolhido E todos os de baixo, até achar um break. Às vezes isso é proposital (agrupar casos), mas geralmente é bug.',box:'atenção'},
+  {h:'switch não trabalha com faixas',p:'switch só compara valores exatos (== ). Para intervalos (ex: nota de 7 a 8,9), use if. Regra prática: valores fixos → switch; faixas → if.'},
+ ],resumo:'switch compara uma variável com valores fixos (case), sempre com break, e default para o resto. Para faixas/intervalos, use if.'},
+
+ for:{dur:'7 min',sections:[
+  {h:'Por que repetir',p:'Repetição (laço/loop) evita reescrever o mesmo código. Quer imprimir de 1 a 100? Em vez de 100 printf, um laço resolve.'},
+  {h:'A estrutura do for',p:'Use for quando souber QUANTAS vezes repetir. Tem três partes separadas por ;:\nfor(inicialização; condição; incremento)\n• inicialização: roda uma vez (int i = 0)\n• condição: testada a cada volta; enquanto verdadeira, repete (i < 10)\n• incremento: roda ao fim de cada volta (i++)',code:'for (int i = 1; i <= 5; i++) {\n    printf("Volta %d\\n", i);\n}'},
+  {h:'Padrões essenciais',p:'• ACUMULADOR: soma += i — vai somando tudo.\n• CONTADOR: if(par) cont++ — conta quantos atendem a uma condição.\n• Sempre inicialize o acumulador/contador ANTES do laço (geralmente com 0).',box:'dica'},
+  {h:'Laços aninhados',p:'Um for dentro de outro é a base das matrizes e tabelas. O de fora controla as linhas, o de dentro as colunas. O interno completa todas as voltas para cada volta do externo.'},
+ ],resumo:'for(início; condição; passo) repete um número conhecido de vezes. Domine os padrões acumulador e contador, sempre inicializados antes do laço.'},
+
+ while:{dur:'6 min',sections:[
+  {h:'while x for',p:'Use while quando NÃO souber quantas vezes vai repetir — depende de algo que acontece durante a execução (ex: "leia até o usuário digitar 0"). O for é para quantidade conhecida; o while, para condição.'},
+  {h:'while — testa antes',p:'while (condição) { ... } verifica a condição ANTES de cada volta. Se já começar falsa, o corpo nem executa.',code:'int n;\nscanf("%d", &n);\nwhile (n != -1) {\n    soma += n;\n    scanf("%d", &n);\n}'},
+  {h:'do-while — testa depois',p:'do { ... } while (condição); executa o corpo PELO MENOS UMA VEZ e só então testa. Perfeito para menus e validação de entrada ("repita a pergunta enquanto a resposta for inválida").',code:'do {\n    scanf("%d", &nota);\n} while (nota < 0 || nota > 10);'},
+  {h:'A sentinela e o laço infinito',p:'SENTINELA é um valor combinado que encerra a leitura (ex: -1, 0). Já o LAÇO INFINITO é o pesadelo: se nada dentro do while muda a condição, ele nunca para. Garanta sempre que algo evolua a cada volta.',box:'atenção'},
+ ],resumo:'while testa antes, do-while testa depois (executa ao menos 1 vez). Use para repetições de quantidade desconhecida, com sentinela para parar — e cuidado com laços infinitos.'},
+
+ string:{dur:'7 min',sections:[
+  {h:'O que é uma string em C',p:'Diferente de outras linguagens, C não tem um tipo "string" pronto. Uma string é um VETOR DE CHAR terminado por um caractere especial invisível: \'\\0\' (o nulo). É ele que marca onde o texto acaba.',code:'char nome[20];   // cabe até 19 letras + o \\0'},
+  {h:'Lendo texto',p:'• scanf("%s", nome) — lê UMA palavra (para no primeiro espaço). Note: sem & em strings!\n• fgets(nome, 20, stdin) — lê a LINHA inteira, com espaços (mais seguro). Cuidado: o fgets pode guardar o \\n do Enter no fim.',box:'dica'},
+  {h:'A biblioteca string.h',p:'Funções prontas para manipular texto (inclua #include <string.h>):\n• strlen(s) — quantidade de caracteres\n• strcpy(destino, origem) — copia (não use =!)\n• strcmp(a, b) — compara; retorna 0 se forem iguais\n• strcat(a, b) — concatena b no fim de a',code:'if (strcmp(senha, "1234") == 0)\n    printf("Acesso liberado\\n");'},
+  {h:'Percorrendo caractere a caractere',p:'Como string é vetor, você acessa cada letra por índice: s[0], s[1]... Um laço comum vai até encontrar o \'\\0\':',code:'for (int i = 0; s[i] != \'\\0\'; i++) {\n    // s[i] e o caractere atual\n}'},
+ ],resumo:'String é vetor de char terminado em \\0. Leia com fgets (frases) ou scanf %s (palavra), e use <string.h>: strlen, strcpy, strcmp, strcat. Compare com strcmp, nunca com ==.'},
+
+ vetor:{dur:'7 min',sections:[
+  {h:'O problema que o vetor resolve',p:'Imagine guardar 100 notas. Criar nota1, nota2... nota100 é inviável. O VETOR (array) guarda vários valores do mesmo tipo numa única variável, acessados por um índice.'},
+  {h:'Declarando e acessando',p:'tipo nome[tamanho]; — ex: int v[5]; cria 5 posições.\nO índice SEMPRE começa em 0. Então int v[5] tem as posições v[0], v[1], v[2], v[3], v[4]. A última é tamanho-1.',code:'int v[5];\nv[0] = 10;\nv[4] = 50;   // ultima posicao'},
+  {h:'Lendo e mostrando com laço',p:'Vetor combina perfeitamente com for: um laço para preencher, outro para mostrar.',code:'for (int i = 0; i < 5; i++)\n    scanf("%d", &v[i]);'},
+  {h:'O perigo de passar do limite',p:'Acessar v[5] num vetor de 5 posições (que vai só até v[4]) é um erro grave: C não avisa, mas você lê/escreve numa região de memória que não é sua — causa bugs imprevisíveis e o temido "segmentation fault".',box:'atenção'},
+  {h:'Técnica do "campeão"',p:'Para achar o maior/menor: suponha que o primeiro é o campeão e percorra o resto comparando, atualizando o campeão quando achar alguém melhor.'},
+ ],resumo:'Vetor guarda vários valores do mesmo tipo, indexados a partir de 0 (último = tamanho-1). Combine com for e nunca ultrapasse o limite.'},
+
+ matriz:{dur:'6 min',sections:[
+  {h:'Vetor de duas dimensões',p:'A matriz é um vetor com LINHAS e COLUNAS — uma tabela. Útil para tabuleiros, planilhas, notas de vários alunos em várias provas.'},
+  {h:'Declaração e acesso',p:'tipo nome[linhas][colunas]; — ex: int m[3][4]; tem 3 linhas e 4 colunas. Acesse com dois índices: m[i][j], onde i é a linha e j a coluna (ambos começam em 0).',code:'int m[3][4];\nm[0][0] = 1;   // primeira linha, primeira coluna\nm[2][3] = 9;   // ultima linha, ultima coluna'},
+  {h:'Dois laços aninhados',p:'Para percorrer uma matriz, use dois for: o externo nas linhas (i), o interno nas colunas (j). Para imprimir bonito, dê um printf("\\n") ao final de cada linha.',code:'for (int i = 0; i < 3; i++) {\n    for (int j = 0; j < 4; j++)\n        printf("%d ", m[i][j]);\n    printf("\\n");\n}'},
+  {h:'Operações comuns',p:'Somar elementos, achar maior/menor, somar por linha ou por coluna, trocar linhas/colunas, transpor (inverter linhas com colunas). Todas seguem o mesmo esqueleto de dois laços.'},
+ ],resumo:'Matriz = tabela [linhas][colunas], acessada por m[i][j] (i=linha, j=coluna). Percorra com dois for aninhados, com \\n ao fim de cada linha.'},
+
+ func:{dur:'8 min',sections:[
+  {h:'Dividir para conquistar',p:'Funções quebram um programa grande em pedaços menores, nomeados e reutilizáveis. Vantagens: código organizado, sem repetição, mais fácil de testar e corrigir. Você já usa funções: printf, scanf e a própria main são funções!'},
+  {h:'Anatomia de uma função',p:'tipoRetorno nome(parâmetros) { corpo; return valor; }\n• tipo de retorno: o tipo do valor que ela devolve (int, float...) ou void se não devolve nada.\n• parâmetros: os dados que ela recebe.\n• return: devolve o resultado e encerra a função.',code:'int soma(int a, int b) {\n    return a + b;\n}\n// uso: int r = soma(3, 4);'},
+  {h:'Protótipo e ordem',p:'A função precisa ser conhecida antes de ser usada. Ou você a define ANTES da main, ou declara um PROTÓTIPO no topo (a assinatura terminada em ;): int soma(int a, int b);',box:'dica'},
+  {h:'Passagem por valor',p:'Por padrão, a função recebe CÓPIAS dos valores. Alterar um parâmetro dentro da função NÃO muda a variável original lá fora. Para realmente alterar o original, é preciso passar o endereço (ponteiros) — assunto do próximo módulo.',box:'atenção'},
+  {h:'Funções e vetores',p:'Vetores são uma exceção: ao passar um vetor, passa-se o endereço dele (não uma cópia). Por isso a função consegue alterá-lo, e você deve passar o tamanho junto.'},
+ ],resumo:'Funções organizam e reutilizam código: tipoRetorno nome(parâmetros) + return. Parâmetros normais são cópias (por valor); vetores vão por referência. Declare protótipo se a função vier depois da main.'},
+
+ ponteiro:{dur:'10 min',sections:[
+  {h:'O coração do C',p:'Ponteiros assustam, mas a ideia é simples: toda variável mora num ENDEREÇO na memória. Um ponteiro é uma variável que guarda esse endereço — ele "aponta" para outra variável.'},
+  {h:'Os operadores & e *',p:'• & — "endereço de": &x é onde x mora na memória.\n• * na declaração — cria um ponteiro: int *p;\n• * no uso — "conteúdo de" (desreferência): *p é o valor guardado no endereço que p aponta.',code:'int x = 10;\nint *p = &x;     // p aponta para x\nprintf("%d", *p); // mostra 10 (o conteudo)\n*p = 20;          // muda x para 20!'},
+  {h:'Para que servem',p:'1) Passagem por referência — funções que alteram as variáveis originais.\n2) Vetores — o nome de um vetor já é um ponteiro para o primeiro elemento.\n3) Alocação dinâmica — criar memória durante a execução.\n4) Estruturas de dados — listas, árvores, etc.'},
+  {h:'Passagem por referência',p:'Passando o ENDEREÇO (&x), a função recebe um ponteiro e pode alterar a variável real lá fora. É assim que uma função consegue "devolver" mais de um valor.',code:'void dobrar(int *n) {\n    *n = *n * 2;\n}\n// chamada: dobrar(&x);'},
+  {h:'Cuidados',p:'Um ponteiro não inicializado ou apontando para lugar inválido (NULL ou lixo) causa "segmentation fault" ao ser desreferenciado. Sempre saiba para onde seu ponteiro aponta antes de usar *.',box:'atenção'},
+ ],resumo:'Ponteiro guarda o endereço de outra variável. & = endereço de, * = conteúdo de. Servem para passagem por referência, vetores e alocação dinâmica. Cuidado com ponteiros inválidos.'},
+
+ struct:{dur:'7 min',sections:[
+  {h:'Agrupando dados relacionados',p:'Um aluno tem nome, idade e nota — tipos diferentes que descrevem UMA coisa. A struct agrupa esses campos num único "registro", em vez de variáveis soltas.'},
+  {h:'Definindo e usando',p:'Defina a estrutura e acesse os campos com PONTO:',code:'struct Aluno {\n    char nome[30];\n    int idade;\n    float nota;\n};\n\nstruct Aluno a;\na.idade = 20;\nscanf("%f", &a.nota);'},
+  {h:'typedef — escrevendo menos',p:'Com typedef você cria um apelido e evita repetir "struct" toda hora:',code:'typedef struct {\n    char nome[30];\n    float nota;\n} Aluno;\n\nAluno a;   // sem precisar de "struct"'},
+  {h:'Vetor de structs',p:'O poder real aparece ao juntar struct com vetor: uma TABELA de registros. Aluno turma[40]; guarda 40 alunos completos. Acesse com turma[i].nota.'},
+  {h:'Struct dentro de struct',p:'Um campo pode ser outra struct. Ex: uma Pessoa com um campo Data nascimento (que tem dia, mês, ano). Acesse encadeando: pessoa.nascimento.ano.'},
+ ],resumo:'struct agrupa campos de tipos diferentes num registro, acessados com ponto. typedef cria um apelido; vetor de structs forma tabelas; structs podem conter outras structs.'},
+
+ aloc:{dur:'8 min',sections:[
+  {h:'O problema do tamanho fixo',p:'int v[100]; reserva 100 posições SEMPRE — desperdício se usar 5, e insuficiente se precisar de 200. A alocação dinâmica resolve: você pede a memória do tamanho exato DURANTE a execução.'},
+  {h:'malloc e free',p:'Inclua #include <stdlib.h>.\n• malloc(tamanho_em_bytes) — reserva memória e devolve um ponteiro para ela.\n• Use sizeof(tipo) para calcular os bytes.\n• free(ponteiro) — devolve a memória ao sistema quando terminar.',code:'int n;\nscanf("%d", &n);\nint *v = malloc(n * sizeof(int));\n// ... usa v como vetor normal: v[0], v[i] ...\nfree(v);'},
+  {h:'Sempre verifique o NULL',p:'Se não houver memória disponível, malloc devolve NULL. Antes de usar, confira: if (v == NULL) { ... trate o erro ... }.',box:'atenção'},
+  {h:'Vazamento de memória',p:'Todo malloc PRECISA de um free correspondente. Esquecer o free é um "vazamento": a memória fica reservada à toa até o programa fechar. Em programas grandes, isso trava a máquina.',box:'atenção'},
+  {h:'calloc e realloc',p:'• calloc — como malloc, mas já zera a memória.\n• realloc(ponteiro, novo_tamanho) — redimensiona um bloco já alocado, preservando o conteúdo. Útil para vetores que crescem.'},
+ ],resumo:'Alocação dinâmica (malloc + free, de <stdlib.h>) reserva memória do tamanho exato em tempo de execução. Sempre verifique NULL e dê free para não vazar memória. realloc redimensiona.'},
+
+ alocf:{dur:'6 min',sections:[
+  {h:'Juntando os conceitos',p:'Este módulo combina alocação dinâmica + funções + ponteiros — o trio mais poderoso (e cobrado) do C. Funções podem alocar, preencher e devolver memória, ou modificar dados via referência.'},
+  {h:'Função que aloca e retorna',p:'Uma função pode criar um vetor dinâmico e retornar o ponteiro. Regra: quem chama a função fica responsável por dar o free depois.',code:'int* criar(int n) {\n    int *v = malloc(n * sizeof(int));\n    return v;\n}\nint *meu = criar(10);\n// ... usa ...\nfree(meu);'},
+  {h:'Passando o tamanho junto',p:'C não guarda o tamanho de um bloco alocado. Sempre passe o tamanho como parâmetro junto com o ponteiro, senão a função não sabe até onde ir.',box:'dica'},
+  {h:'Ponteiro para ponteiro',p:'Para uma função alocar e devolver pela própria referência (alterando o ponteiro original da main), usa-se ponteiro-para-ponteiro (int **). É o nível mais avançado da passagem por referência.'},
+ ],resumo:'Combine alocação + funções + ponteiros: funções podem alocar e retornar memória (quem chama dá free), sempre passando o tamanho junto. Ponteiro-para-ponteiro (**) permite alterar o ponteiro original.'},
+
+ arquivo:{dur:'7 min',sections:[
+  {h:'Persistência: dados que sobrevivem',p:'Tudo que está na memória some quando o programa fecha. ARQUIVOS gravam dados no disco — assim seu cadastro continua lá na próxima execução.'},
+  {h:'Abrir e fechar',p:'Use um ponteiro do tipo FILE. fopen abre o arquivo num MODO:\n• "r" — ler (o arquivo precisa existir)\n• "w" — escrever (cria/zera o arquivo)\n• "a" — anexar (adiciona ao fim)\n• "rb"/"wb" — versões binárias.\nSempre feche com fclose (é o que efetiva a gravação).',code:'FILE *f = fopen("dados.txt", "w");\nif (f == NULL) return 1;   // checagem!\nfprintf(f, "Lucas 9.5\\n");\nfclose(f);'},
+  {h:'Escrever e ler',p:'• fprintf(f, ...) e fscanf(f, ...) — como printf/scanf, mas no arquivo.\n• fputc/fgetc — um caractere por vez.\n• fgets(linha, tam, f) — lê uma linha.\n• fwrite/fread — gravam/leem blocos binários (ótimo para structs inteiras).'},
+  {h:'Detectando o fim do arquivo',p:'Ao ler, você não sabe quantas linhas há. fgets devolve NULL no fim; fscanf devolve EOF. Use isso como condição de parada do laço: while (fgets(linha, 100, f) != NULL).',box:'dica'},
+ ],resumo:'Arquivos persistem dados no disco. Abra com fopen (modos r/w/a), grave com fprintf/fwrite, leia com fscanf/fgets, e SEMPRE feche com fclose. Verifique NULL e detecte o fim com NULL/EOF.'},
+
+ recursao:{dur:'7 min',sections:[
+  {h:'Uma função que chama a si mesma',p:'Recursão é quando uma função se chama de novo, resolvendo um problema grande em termos de uma versão menor dele mesmo. É a forma natural de pensar em fatorial, Fibonacci e percorrer estruturas como árvores.'},
+  {h:'Os dois ingredientes',p:'Toda recursão precisa de:\n1) CASO BASE — a condição que PARA a recursão (o problema mais simples, resposta direta).\n2) CASO RECURSIVO — a função se chama com um problema menor, caminhando em direção ao caso base.\nSem caso base = recursão infinita (estoura a memória da pilha).',box:'atenção'},
+  {h:'Exemplo: fatorial',p:'n! = n × (n-1)!. O caso base é 1! = 1 (ou 0! = 1).',code:'int fat(int n) {\n    if (n <= 1) return 1;        // caso base\n    return n * fat(n - 1);       // caso recursivo\n}'},
+  {h:'Como o computador resolve',p:'Cada chamada fica "empilhada" esperando a de baixo terminar (pilha de chamadas). fat(3) espera fat(2), que espera fat(1), que retorna 1; aí elas se resolvem de baixo para cima: 1 → 2 → 6.'},
+  {h:'Recursão x iteração',p:'Tudo que se faz com recursão também se faz com laços (iteração). A recursão é mais elegante para certos problemas, mas consome mais memória. Escolha conforme a clareza e a eficiência.'},
+ ],resumo:'Recursão = função que se chama, com um caso base (para parar) e um caso recursivo (problema menor). Sem caso base, estoura a pilha. Equivalente a laços, porém mais elegante para certos problemas.'},
+
+ ordbusca:{dur:'8 min',sections:[
+  {h:'Dois problemas fundamentais',p:'BUSCA: encontrar um valor numa coleção. ORDENAÇÃO: colocar os elementos em ordem. São operações usadíssimas e a porta de entrada para "algoritmos e complexidade".'},
+  {h:'Busca linear',p:'A mais simples: percorre o vetor do início ao fim comparando. Funciona em qualquer vetor (ordenado ou não), mas é lenta para grandes volumes (no pior caso, olha todos).'},
+  {h:'Busca binária',p:'Muito mais rápida, mas exige vetor ORDENADO. Olha o elemento do meio: se for o alvo, achou; se o alvo é menor, repete na metade de baixo; se maior, na de cima. A cada passo descarta METADE dos dados.',code:'int meio = (ini + fim) / 2;\nif (v[meio] == alvo) return meio;\nif (v[meio] < alvo) ini = meio + 1;\nelse fim = meio - 1;'},
+  {h:'Algoritmos de ordenação',p:'• Bubble Sort — compara vizinhos e troca os fora de ordem; os maiores "borbulham" para o fim.\n• Selection Sort — a cada passada, seleciona o menor e o coloca na posição certa.\n• Insertion Sort — insere cada elemento na posição correta entre os já ordenados (como organizar cartas na mão).'},
+  {h:'Noção de eficiência (Big-O)',p:'Busca linear e os sorts simples são "lentos" (O(n) e O(n²)). Busca binária é rápida (O(log n)). Você não precisa dominar a matemática agora — só entender que ALGUNS algoritmos escalam muito melhor que outros.',box:'dica'},
+ ],resumo:'Busca linear (qualquer vetor, lenta) x binária (vetor ordenado, rápida, corta pela metade). Ordenação: bubble, selection, insertion. Noção: alguns algoritmos escalam muito melhor (Big-O).'},
+
+ lista:{dur:'8 min',sections:[
+  {h:'Limitações do vetor',p:'Vetor tem tamanho fixo e inserir/remover no meio exige deslocar todo mundo. A LISTA ENCADEADA cresce sob demanda e insere/remove sem deslocar — pagando o preço de não ter acesso direto por índice.'},
+  {h:'O nó',p:'A lista é feita de NÓS. Cada nó tem dois campos: o DADO e um PONTEIRO para o próximo nó. O último nó aponta para NULL (fim da lista).',code:'typedef struct No {\n    int dado;\n    struct No *prox;\n} No;'},
+  {h:'A cabeça da lista',p:'Guardamos um ponteiro para o primeiro nó (a "cabeça"). Lista vazia = cabeça é NULL. A partir da cabeça, navegamos de nó em nó seguindo o campo prox.'},
+  {h:'Operações básicas',p:'• Inserir no início: o novo nó aponta para a antiga cabeça e vira a nova cabeça (rápido).\n• Percorrer: comece na cabeça e vá com p = p->prox até chegar em NULL.\n• Remover: ajuste o prox do nó anterior para "pular" o removido, e dê free no nó.',code:'for (No *p = cabeca; p != NULL; p = p->prox)\n    printf("%d ", p->dado);'},
+  {h:'Não esqueça o free',p:'Cada nó foi criado com malloc; ao destruir a lista, percorra liberando nó a nó. E use -> para acessar campos através de um ponteiro (atalho para (*p).dado).',box:'atenção'},
+ ],resumo:'Lista encadeada = nós (dado + ponteiro prox), começando na cabeça e terminando em NULL. Cresce dinamicamente; insere/remove sem deslocar. Acesse campos com -> e libere cada nó com free.'},
+
+ pilhafila:{dur:'6 min',sections:[
+  {h:'Estruturas com regra de acesso',p:'Pilhas e filas são listas com uma REGRA de quem entra/sai. Aparecem o tempo todo: desfazer (Ctrl+Z), histórico do navegador, fila de impressão, processamento de tarefas.'},
+  {h:'Pilha (LIFO)',p:'LIFO = Last In, First Out (último a entrar, primeiro a sair) — como uma pilha de pratos. Operações:\n• push — empilha (coloca no topo)\n• pop — desempilha (tira do topo)\nO acesso é só pelo topo.',code:'void push(int x){ pilha[++topo] = x; }\nint  pop(){ return pilha[topo--]; }'},
+  {h:'Fila (FIFO)',p:'FIFO = First In, First Out (primeiro a entrar, primeiro a sair) — como uma fila de banco. Operações:\n• enqueue — entra no FIM\n• dequeue — sai do INÍCIO'},
+  {h:'Como implementar',p:'Dá para implementar com VETOR (controlando índices de topo/início/fim) ou com LISTA ENCADEADA (sem limite de tamanho). A escolha depende se o tamanho máximo é conhecido.'},
+ ],resumo:'Pilha = LIFO (push/pop pelo topo); Fila = FIFO (enqueue no fim, dequeue no início). Implementáveis com vetor (com índices) ou lista encadeada. Base de undo, históricos e filas de tarefas.'},
+
+ modular:{dur:'7 min',sections:[
+  {h:'Por que dividir o código',p:'Programas grandes em um só arquivo viram caos. Modularização separa o código em vários arquivos por responsabilidade — mais organização, reuso e compilação mais rápida (só recompila o que mudou).'},
+  {h:'Arquivos .h e .c',p:'• .h (header) — só as DECLARAÇÕES (protótipos das funções, constantes, structs).\n• .c — a IMPLEMENTAÇÃO (o corpo das funções).\nQuem quiser usar suas funções faz #include "seu.h".',code:'/* mat.h */\nint soma(int a, int b);\n\n/* mat.c */\nint soma(int a, int b){ return a+b; }'},
+  {h:'Guarda de inclusão',p:'Para o mesmo header não ser incluído duas vezes (o que causa erros), envolva o .h com a guarda:',code:'#ifndef MAT_H\n#define MAT_H\n// ... declaracoes ...\n#endif'},
+  {h:'Compilando vários arquivos',p:'gcc main.c mat.c -o programa — junta tudo num executável. Em projetos maiores, um MAKEFILE automatiza isso: você digita "make" e ele compila só o necessário. Atenção: as linhas de comando do Makefile começam com TAB.',box:'dica'},
+  {h:'O pré-processador',p:'#include, #define e #ifndef são comandos do PRÉ-PROCESSADOR — rodam ANTES da compilação, fazendo substituições de texto. #define cria constantes e macros (ex: #define DOBRO(x) ((x)*2)).'},
+ ],resumo:'Modularize em .h (declarações) + .c (implementação), com guarda #ifndef/#define/#endif. Compile junto (gcc a.c b.c) ou com Makefile (linhas com TAB). #include/#define são do pré-processador.'},
+
+ boas:{dur:'7 min',sections:[
+  {h:'Programar bem, não só funcionar',p:'Código que "roda" não basta — precisa ser legível, seguro e fácil de corrigir. Estes hábitos separam o iniciante do programador maduro.'},
+  {h:'Ligue os avisos do compilador',p:'Compile com gcc -Wall -Wextra. O compilador aponta variáveis não usadas, conversões perigosas e prováveis bugs ANTES de você sofrer. Tratar todo aviso é um ótimo hábito.',box:'dica'},
+  {h:'Disciplina de memória e recursos',p:'• Todo malloc tem um free.\n• Todo fopen tem um fclose.\n• Inicialize variáveis antes de usar (lixo na memória causa bugs aleatórios).\n• Após free, faça ponteiro = NULL para não reusá-lo por engano.'},
+  {h:'Valide nas bordas',p:'Não confie na entrada: cheque o retorno do scanf, trate divisão por zero, valide índices e tamanhos. A maioria dos bugs nasce em dados inesperados.',box:'atenção'},
+  {h:'Depurando',p:'• printf de depuração: imprima valores em pontos-chave para ver o que acontece.\n• GDB: depurador que executa passo a passo e inspeciona variáveis.\n• Erros comuns: "segmentation fault" (ponteiro/índice inválido), esquecer o & no scanf, usar = no lugar de ==, faltar break no switch.'},
+  {h:'Estilo',p:'Nomes claros (mediaTurma, não x2), funções pequenas com uma responsabilidade, indentação consistente e comentários no PORQUÊ (não no óbvio).'},
+ ],resumo:'Compile com -Wall -Wextra, inicialize variáveis, libere recursos (free/fclose), valide entradas e índices, depure com printf/GDB e escreva código legível. Conheça os erros clássicos.'},
+
+ projetos:{dur:'6 min',sections:[
+  {h:'Hora de juntar tudo',p:'Um projeto final integra todos os conceitos: menu em laço, funções, structs, vetores ou listas, e arquivos para persistir. É onde o aprendizado vira habilidade real.'},
+  {h:'O esqueleto de quase todo sistema',p:'Um menu que repete até o usuário sair, com switch chamando cada funcionalidade:',code:'do {\n    printf("1-Inserir 2-Listar 0-Sair: ");\n    scanf("%d", &op);\n    switch (op) {\n        case 1: inserir(); break;\n        case 2: listar();  break;\n    }\n} while (op != 0);'},
+  {h:'Como conduzir um projeto',p:'• Comece pequeno (versão 1 mínima) e vá incrementando.\n• Faça UMA função por funcionalidade e teste cada uma isoladamente.\n• Use struct para os dados e vetor/lista para a coleção.\n• Adicione persistência em arquivo por último.',box:'dica'},
+  {h:'Ideias de projeto',p:'Calculadora completa · Cadastro CRUD (inserir/listar/buscar/editar/remover) · Jogo de adivinhação · Forca · Agenda de contatos persistida · Gerenciador de tarefas. Todos estão na aba Exercícios deste módulo.'},
+ ],resumo:'Projetos integram menu (do-while + switch), funções, structs, vetores/listas e arquivos. Comece pequeno, teste cada função, e adicione persistência por último.'},
+};
+
+/* ============ FLASHCARDS (frente / verso) por módulo ============ */
+const FLASH={
+ intro:[['Por onde a execução de um programa em C sempre começa?','Pela função int main().'],['Para que serve #include <stdio.h>?','Inclui a biblioteca padrão de entrada/saída (printf, scanf).'],['O que faz \\n dentro de um printf?','Quebra a linha (pula para a próxima).'],['Como termina todo comando em C?','Com ponto e vírgula ;']],
+ math:[['Qual função calcula a raiz quadrada?','sqrt(x) (da biblioteca <math.h>).'],['Quanto dá 7/2 em C com inteiros?','3 — divisão entre inteiros descarta as casas decimais.'],['Como elevar x ao cubo?','pow(x, 3).']],
+ seq:[['Qual a tríade de um programa sequencial?','Entrada (scanf) → Processamento (contas) → Saída (printf).'],['Por que o & no scanf("%d", &x)?','Indica o endereço da variável onde guardar o valor lido.'],['Como mostrar um real com 2 casas?','printf("%.2f", valor).']],
+ if:[['Diferença entre = e == ?','= atribui um valor; == compara dois valores.'],['O que faz o operador && ?','E lógico: verdadeiro só se ambas as condições forem verdadeiras.'],['Quando usar { } no if?','Sempre que houver mais de um comando no bloco.']],
+ switch:[['Para que serve o break no switch?','Encerra o case; sem ele a execução "vaza" para o próximo.'],['switch funciona com faixas (ex: 7 a 9)?','Não — só valores exatos. Para faixas use if.'],['O que é o default no switch?','O caminho executado quando nenhum case bate.']],
+ for:[['Quais as 3 partes do for?','Inicialização; condição; incremento.'],['Quando preferir for em vez de while?','Quando você SABE quantas vezes vai repetir.'],['O que é um acumulador?','Variável (iniciada em 0) que vai somando valores no laço: soma += i.']],
+ while:[['Diferença entre while e do-while?','while testa antes (pode não executar); do-while executa ao menos 1 vez e testa depois.'],['O que é uma sentinela?','Um valor combinado que encerra a leitura (ex: -1 ou 0).'],['O que causa um laço infinito?','Nada dentro do laço muda a condição de parada.']],
+ string:[['O que marca o fim de uma string em C?','O caractere nulo \'\\0\'.'],['Como comparar duas strings?','Com strcmp(a,b) — retorna 0 se forem iguais (nunca use ==).'],['scanf("%s") ou fgets para ler frase com espaços?','fgets — o scanf %s para no primeiro espaço.']],
+ vetor:[['Qual o índice do primeiro elemento de um vetor?','0 (zero). O último é tamanho-1.'],['O que acontece ao acessar fora do limite do vetor?','Comportamento indefinido (lixo/segfault) — C não avisa.'],['Como achar o maior elemento?','Técnica do campeão: suponha o 1º como maior e compare com o resto.']],
+ matriz:[['Como declarar uma matriz 3x4 de int?','int m[3][4]; (3 linhas, 4 colunas).'],['Quantos laços para percorrer uma matriz?','Dois for aninhados (linha e coluna).'],['Em m[i][j], o que é i e o que é j?','i = linha, j = coluna.']],
+ func:[['O que significa void como retorno?','A função não devolve nenhum valor.'],['Parâmetros normais são cópias ou os originais?','Cópias (passagem por valor) — não alteram o original.'],['Por que vetores são exceção na passagem?','São passados por referência (o nome é o endereço).']],
+ ponteiro:[['O que um ponteiro armazena?','O endereço de outra variável.'],['O que significam & e * ?','& = "endereço de"; * = "conteúdo do endereço" (desreferência).'],['Como alterar a variável original dentro de uma função?','Passando seu endereço (&x) e recebendo um ponteiro.']],
+ struct:[['Para que serve uma struct?','Agrupar campos de tipos diferentes num único registro.'],['Como acessar um campo de struct?','Com ponto: aluno.nota.'],['O que typedef faz com structs?','Cria um apelido para escrever sem repetir "struct".']],
+ aloc:[['Qual função reserva memória dinamicamente?','malloc(n * sizeof(tipo)), de <stdlib.h>.'],['O que fazer sempre depois de usar malloc?','Verificar se retornou NULL e, no fim, dar free.'],['O que é vazamento de memória?','Esquecer o free — a memória fica reservada à toa.']],
+ alocf:[['Quem é responsável pelo free quando uma função aloca e retorna?','Quem chamou a função.'],['Por que passar o tamanho junto com o ponteiro?','C não guarda o tamanho de um bloco alocado.'],['Para que serve realloc?','Redimensionar um bloco já alocado, preservando o conteúdo.']],
+ arquivo:[['Qual o tipo do ponteiro de arquivo?','FILE * (ex: FILE *f).'],['O que significam os modos "r", "w", "a"?','Ler, escrever (zera) e anexar (adiciona ao fim).'],['O que fclose faz de importante?','Fecha e efetiva a gravação no disco.']],
+ recursao:[['Quais os 2 ingredientes da recursão?','Caso base (para parar) e caso recursivo (problema menor).'],['O que acontece sem caso base?','Recursão infinita — estoura a pilha de chamadas.'],['Recursão e iteração são equivalentes?','Sim — tudo que se faz com recursão dá para fazer com laços.']],
+ ordbusca:[['Pré-requisito da busca binária?','O vetor precisa estar ORDENADO.'],['O que a busca binária faz a cada passo?','Descarta metade dos dados comparando com o elemento do meio.'],['Como o Bubble Sort ordena?','Compara vizinhos e troca os fora de ordem; os maiores "borbulham" ao fim.']],
+ lista:[['O que cada nó de uma lista encadeada contém?','Um dado e um ponteiro para o próximo nó.'],['Para onde aponta o último nó?','Para NULL.'],['Como acessar um campo via ponteiro de nó?','Com -> (ex: p->dado).']],
+ pilhafila:[['O que significa LIFO?','Last In, First Out — o último a entrar é o primeiro a sair (pilha).'],['O que significa FIFO?','First In, First Out — o primeiro a entrar sai primeiro (fila).'],['Operações da pilha?','push (empilha) e pop (desempilha), pelo topo.']],
+ modular:[['O que vai no arquivo .h?','As declarações (protótipos), não a implementação.'],['Para que serve #ifndef/#define/#endif?','Guarda de inclusão: evita incluir o mesmo header duas vezes.'],['Como compilar dois arquivos juntos?','gcc main.c outro.c -o programa.']],
+ boas:[['Que flags mostram mais avisos no gcc?','-Wall -Wextra.'],['Causa comum de segmentation fault?','Ponteiro ou índice de vetor inválido.'],['Boa prática após free(p)?','Fazer p = NULL para não reutilizar por engano.']],
+ projetos:[['Que estrutura forma o menu de quase todo sistema?','do-while com switch, repetindo até o usuário sair.'],['Como conduzir um projeto?','Começar pequeno, testar cada função, e adicionar persistência por último.'],['O que dá persistência a um projeto?','Salvar os dados em arquivo.']],
+};
+
+/* ============ FLASHCARDS EXTRAS (mesclados ao FLASH acima) ============ */
+const FLASH_EXTRA={
+ intro:[['O que diferencia int de float?','int guarda inteiros; float guarda números com casas decimais.'],['C diferencia maiúsculas de minúsculas?','Sim — Main e main são nomes diferentes.'],['Para que serve a indentação?','Deixar o código legível; o compilador a ignora, mas facilita a leitura.'],['Qual atalho compila e roda no Dev-C++?','F11 (F9 compila, F10 roda).']],
+ math:[['O que faz fabs(x)?','Devolve o valor absoluto (módulo) de um número real.'],['Como obter 5/2 com resultado 2.5?','Usar 5.0/2 — pelo menos um operando real.'],['O que faz o operador % ?','Devolve o resto da divisão inteira.'],['ceil(2.1) e floor(2.9) retornam o quê?','3 e 2 — arredonda para cima e para baixo.']],
+ seq:[['Qual especificador lê um double no scanf?','%lf'],['Para que serve #define?','Criar constantes/macros (ex: #define PI 3.14159).'],['Como alinhar à esquerda em 20 colunas no printf?','%-20d (ou %-20s, etc).'],['Qual a ordem natural de um programa sequencial?','Ler → calcular → mostrar, de cima para baixo.']],
+ if:[['O que faz o operador || ?','OU lógico: verdadeiro se PELO MENOS uma condição for verdadeira.'],['O que faz o operador ! ?','NÃO lógico: inverte o valor (verdadeiro vira falso).'],['Como testar se n é par?','if(n % 2 == 0).'],['else if serve para quê?','Testar outra condição quando a anterior foi falsa.']],
+ switch:[['Que tipos o switch aceita testar?','int e char (valores exatos).'],['O que pode acontecer de propósito ao agrupar cases sem break?','Vários valores executam o mesmo bloco.'],['Quando usar if em vez de switch?','Quando a condição envolve faixas/intervalos ou comparações complexas.']],
+ for:[['Como percorrer um vetor de tamanho n com for?','for(int i=0; i<n; i++).'],['O que é um contador?','Variável que conta ocorrências (cont++) dentro do laço.'],['Para que servem laços aninhados?','Percorrer matrizes/tabelas (linha × coluna).'],['Onde inicializar o acumulador?','Antes do laço, geralmente com 0 (ou 1 para multiplicação).']],
+ while:[['Quando preferir while em vez de for?','Quando não se sabe quantas vezes vai repetir.'],['Estrutura para validar entrada repetindo a pergunta?','do-while (executa ao menos 1 vez).'],['O que garante que um while termine?','Algo dentro dele precisa alterar a condição a cada volta.'],['Como somar números até o usuário digitar 0?','Laço lendo e acumulando enquanto o valor != 0 (sentinela).']],
+ string:[['Quantas letras cabem em char nome[20]?','19 + o \'\\0\' (são 20 posições).'],['O que strcpy faz?','Copia uma string para outra (não use = para isso).'],['O que strcat faz?','Concatena (junta) uma string ao fim de outra.'],['Por que usar & no scanf de string?','Não se usa — o nome do vetor já é o endereço.']],
+ vetor:[['Como ler 5 inteiros num vetor?','Um for de 0 a 4 com scanf("%d", &v[i]).'],['Vetor tem tamanho fixo ou dinâmico?','Fixo (definido na declaração). Para dinâmico, use malloc.'],['Como inverter a exibição de um vetor?','Percorrer do último índice (n-1) até 0.'],['Como contar pares num vetor?','Percorrer e usar if(v[i] % 2 == 0) cont++.']],
+ matriz:[['Como zerar/percorrer toda a matriz?','Dois for aninhados (linhas e colunas).'],['O que é a transposta de uma matriz?','Trocar linhas por colunas (m[i][j] vira t[j][i]).'],['Como somar todos os elementos?','Acumulador dentro dos dois laços: soma += m[i][j].'],['Como imprimir uma matriz em formato de grade?','printf de cada m[i][j] e printf("\\n") ao fim de cada linha.']],
+ func:[['O que é um protótipo de função?','A assinatura declarada antes da main (terminada em ;).'],['O que return faz?','Devolve um valor e encerra a função.'],['Como uma função "devolve" mais de um valor?','Usando ponteiros (passagem por referência).'],['Por que dividir o código em funções?','Organização, reuso e facilidade de testar/corrigir.']],
+ ponteiro:[['Como declarar um ponteiro para int?','int *p;'],['O que faz p = &x ?','Faz p apontar para x (guarda o endereço de x).'],['O que acontece ao alterar *p?','Altera o valor da variável apontada por p.'],['O nome de um vetor é o quê?','Um ponteiro para o seu primeiro elemento.'],['O que causa segmentation fault com ponteiros?','Desreferenciar (*) um ponteiro inválido ou NULL.']],
+ struct:[['Como declarar um vetor de 40 structs Aluno?','Aluno turma[40];'],['Como acessar campo via ponteiro de struct?','Com -> (ex: p->nota).'],['Pode haver struct dentro de struct?','Sim (ex: Pessoa com um campo Data).'],['Vantagem da struct sobre variáveis soltas?','Agrupa dados relacionados num único registro organizado.']],
+ aloc:[['Quanta memória reservar para n inteiros?','malloc(n * sizeof(int)).'],['Qual a diferença entre malloc e calloc?','calloc também ZERA a memória alocada.'],['O que acontece se faltar free?','Vazamento de memória — fica reservada à toa.'],['Onde está malloc/free declarados?','Na biblioteca <stdlib.h>.']],
+ alocf:[['Para que serve realloc?','Redimensionar um bloco já alocado preservando o conteúdo.'],['O que é int** ?','Ponteiro para ponteiro — permite a função alterar o ponteiro original.'],['Por que passar o tamanho a uma função com vetor?','C não armazena o tamanho do bloco.'],['Quem libera memória alocada por uma função?','Quem chamou a função (dá o free).']],
+ arquivo:[['Como abrir um arquivo só para leitura?','fopen("arq.txt", "r").'],['Como saber que o arquivo chegou ao fim na leitura?','fgets retorna NULL / fscanf retorna EOF.'],['Qual modo adiciona ao fim sem apagar?','"a" (append).'],['O que verificar logo após o fopen?','Se retornou NULL (falha ao abrir).']],
+ recursao:[['Qual o caso base do fatorial?','n <= 1 retorna 1.'],['O que é a pilha de chamadas?','Onde ficam empilhadas as chamadas recursivas esperando retorno.'],['Fibonacci recursivo tem quantos casos base?','Dois: fib(0)=0 e fib(1)=1.'],['Vantagem e desvantagem da recursão?','Elegante para certos problemas, mas usa mais memória que laços.']],
+ ordbusca:[['Quando a busca linear é necessária?','Quando o vetor NÃO está ordenado.'],['Complexidade da busca binária?','O(log n) — muito rápida.'],['Como o Selection Sort funciona?','A cada passada seleciona o menor e o põe na posição certa.'],['Como o Insertion Sort funciona?','Insere cada elemento na posição correta entre os já ordenados.']],
+ lista:[['Como saber que uma lista está vazia?','A cabeça (head) é NULL.'],['Como percorrer uma lista encadeada?','p = cabeca; enquanto p != NULL; p = p->prox.'],['Vantagem da lista sobre o vetor?','Cresce dinamicamente e insere/remove sem deslocar elementos.'],['O que fazer ao destruir a lista?','Percorrer dando free em cada nó.']],
+ pilhafila:[['Operações de uma fila?','enqueue (entra no fim) e dequeue (sai do início).'],['Exemplo real de pilha?','Desfazer (Ctrl+Z), histórico do navegador.'],['Exemplo real de fila?','Fila de impressão, fila de banco.'],['Com que estruturas implementar pilha/fila?','Vetor (com índices) ou lista encadeada.']],
+ modular:[['O que vai no arquivo .c?','A implementação (corpo das funções).'],['Como criar uma constante no pré-processador?','#define NOME valor.'],['O que o pré-processador faz?','Substituições de texto antes da compilação (#include, #define).'],['Cuidado especial nas linhas de comando do Makefile?','Começam com TAB, não espaços.']],
+ boas:[['Por que inicializar variáveis?','Lixo na memória causa bugs aleatórios.'],['Erro comum no scanf?','Esquecer o & antes da variável.'],['Como depurar passo a passo?','Com o GDB (ou printf de depuração em pontos-chave).'],['Como evitar usar um ponteiro já liberado?','Fazer ponteiro = NULL logo após o free.']],
+ projetos:[['Por onde começar um projeto?','Por uma versão mínima, incrementando aos poucos.'],['Como testar um projeto grande?','Cada função isoladamente, antes de juntar tudo.'],['O que adicionar por último?','A persistência em arquivo.'],['Que conceitos um CRUD usa?','Struct, vetor/lista, funções, menu e (opcional) arquivo.']],
+};
+Object.keys(FLASH_EXTRA).forEach(k=>{FLASH[k]=(FLASH[k]||[]).concat(FLASH_EXTRA[k]);});
+
+/* ============ QUIZZES (múltipla escolha) por módulo ============ */
+const QUIZ={
+ intro:[{q:'Qual linha está sintaticamente correta?',o:['printf("Oi")','printf("Oi");','Printf("Oi");'],a:1,e:'Comandos terminam em ; e printf é minúsculo.'},
+   {q:'O que return 0; indica em main?',o:['Erro no programa','Que o programa terminou bem','Que vai repetir'],a:1,e:'0 sinaliza término sem erros.'}],
+ math:[{q:'Quanto vale 5/2 em C (inteiros)?',o:['2.5','2','3'],a:1,e:'Divisão inteira descarta as casas: 2.'},
+   {q:'Qual biblioteca traz sqrt e pow?',o:['<stdio.h>','<math.h>','<stdlib.h>'],a:1,e:'São funções de <math.h>.'}],
+ seq:[{q:'O que falta em scanf("%d", x)?',o:['Nada','O & antes de x','Aspas em x'],a:1,e:'scanf precisa do endereço: &x.'}],
+ if:[{q:'if(x = 5) faz o quê?',o:['Compara x com 5','Atribui 5 a x (bug!)','Erro de compilação'],a:1,e:'= atribui; para comparar use ==.'},
+   {q:'Qual condição é "x entre 1 e 10"?',o:['x>1 || x<10','x>=1 && x<=10','x>=1 || x<=10'],a:1,e:'Ambas precisam valer → &&.'}],
+ switch:[{q:'O que acontece sem break num case?',o:['Erro','Executa os cases seguintes também','Pula o switch'],a:1,e:'A execução "vaza" até achar um break.'}],
+ for:[{q:'for(int i=0; i<5; i++) executa quantas vezes?',o:['4','5','6'],a:1,e:'i = 0,1,2,3,4 → 5 vezes.'},
+   {q:'Como iniciar um acumulador de soma?',o:['soma=1','soma=0','sem inicializar'],a:1,e:'0 é o neutro da soma.'}],
+ while:[{q:'Qual laço executa ao menos uma vez?',o:['while','do-while','for'],a:1,e:'do-while testa a condição no fim.'}],
+ string:[{q:'Como comparar nome com "Lucas"?',o:['nome == "Lucas"','strcmp(nome,"Lucas")==0','nome.equals'],a:1,e:'strcmp retorna 0 quando iguais.'},
+   {q:'O que termina uma string em C?',o:['Um espaço','O \'\\0\'','O ponto final'],a:1,e:'O caractere nulo marca o fim.'}],
+ vetor:[{q:'Em int v[5], qual é a última posição válida?',o:['v[5]','v[4]','v[6]'],a:1,e:'Índices vão de 0 a tamanho-1 = 4.'}],
+ matriz:[{q:'Quantos for para preencher uma matriz?',o:['1','2','3'],a:1,e:'Um para linhas, outro para colunas.'}],
+ func:[{q:'Alterar um parâmetro int dentro da função muda o original?',o:['Sim','Não (é cópia)','Depende do nome'],a:1,e:'Passagem por valor usa cópias.'}],
+ ponteiro:[{q:'O que *p representa?',o:['O endereço de p','O conteúdo apontado por p','O nome de p'],a:1,e:'* desreferencia: acessa o valor no endereço.'},
+   {q:'Para trocar 2 variáveis numa função, passe...',o:['Os valores','Os endereços (&x, &y)','Nada'],a:1,e:'Com ponteiros a função altera os originais.'}],
+ struct:[{q:'Como acessar o campo idade de uma struct p?',o:['p->idade','p.idade','idade(p)'],a:1,e:'Com variável struct usa-se ponto; -> é para ponteiro.'}],
+ aloc:[{q:'O par correto de malloc é...',o:['delete','free','close'],a:1,e:'free(p) devolve a memória alocada.'},
+   {q:'malloc devolve o quê em caso de falha?',o:['0','NULL','-1'],a:1,e:'Sempre verifique se retornou NULL.'}],
+ alocf:[{q:'Quem libera a memória que uma função alocou e retornou?',o:['A própria função','Quem chamou','O sistema'],a:1,e:'Quem recebe o ponteiro dá o free.'}],
+ arquivo:[{q:'Qual modo do fopen ZERA o arquivo ao abrir?',o:['"r"','"w"','"a"'],a:1,e:'"w" cria/zera; "a" anexa; "r" só lê.'}],
+ recursao:[{q:'O caso base serve para...',o:['Deixar mais rápido','Parar a recursão','Repetir mais'],a:1,e:'Sem caso base a recursão é infinita.'}],
+ ordbusca:[{q:'Busca binária exige que o vetor esteja...',o:['Cheio','Ordenado','Vazio'],a:1,e:'Ela depende da ordem para cortar pela metade.'}],
+ lista:[{q:'O último nó de uma lista aponta para...',o:['O primeiro','NULL','Ele mesmo'],a:1,e:'NULL marca o fim da lista.'}],
+ pilhafila:[{q:'Uma pilha é...',o:['FIFO','LIFO','Aleatória'],a:1,e:'Último a entrar, primeiro a sair.'}],
+ modular:[{q:'A guarda de inclusão evita...',o:['Erros de cálculo','Incluir o header 2x','Vazamento de memória'],a:1,e:'#ifndef/#define/#endif protege o header.'}],
+ boas:[{q:'Para ver mais avisos, compile com...',o:['-fast','-Wall -Wextra','-silent'],a:1,e:'Essas flags mostram problemas cedo.'}],
+ projetos:[{q:'O menu que repete até sair usa...',o:['if simples','do-while + switch','só for'],a:1,e:'Padrão clássico de sistemas de terminal.'}],
+};
+
+/* ============ QUIZZES EXTRAS (mesclados ao QUIZ acima) ============ */
+const QUIZ_EXTRA={
+ intro:[{q:'Qual o tipo certo para guardar 3.14?',o:['int','float ou double','char'],a:1,e:'Reais usam float/double.'},
+   {q:'O que \\n faz dentro do printf?',o:['Apaga a linha','Quebra a linha','Imprime "n"'],a:1,e:'\\n pula para a próxima linha.'}],
+ math:[{q:'Quanto retorna pow(2,4)?',o:['8','16','6'],a:1,e:'2 elevado a 4 = 16.'},
+   {q:'Qual função dá o valor absoluto de um real?',o:['abs','fabs','sqrt'],a:1,e:'fabs trata reais; sqrt é raiz.'}],
+ seq:[{q:'Como mostrar um valor com 2 casas decimais?',o:['%d','%.2f','%c'],a:1,e:'%.2f formata reais com 2 casas.'},
+   {q:'Qual a 1ª etapa de um programa sequencial?',o:['Mostrar','Ler a entrada','Calcular'],a:1,e:'Primeiro lê os dados (scanf).'}],
+ if:[{q:'O que && significa?',o:['OU','E','NÃO'],a:1,e:'&& é o E lógico (ambas verdadeiras).'},
+   {q:'if(idade>=18) testa o quê?',o:['Maior de idade','Menor de idade','Erro'],a:0,e:'Verdadeiro quando idade é 18 ou mais.'}],
+ switch:[{q:'switch aceita testar qual tipo?',o:['Apenas float','int e char','Apenas string'],a:1,e:'Compara valores exatos de int/char.'},
+   {q:'O default é executado quando...',o:['Sempre','Nenhum case bate','O primeiro case','-'],a:1,e:'É o "nenhum dos anteriores".'}],
+ for:[{q:'for(i=10;i>0;i--) imprime de...',o:['1 a 10','10 a 1','0 a 10'],a:1,e:'Começa em 10 e decresce até 1.'},
+   {q:'Para multiplicar acumulando, inicie com...',o:['0','1','-1'],a:1,e:'1 é o neutro da multiplicação.'}],
+ while:[{q:'Quantas vezes um do-while executa no mínimo?',o:['0','1','2'],a:1,e:'Testa só no fim, então roda ao menos 1 vez.'},
+   {q:'Sem alterar a condição, o while vira...',o:['Mais rápido','Laço infinito','Um for'],a:1,e:'Nunca para.'}],
+ string:[{q:'strlen("casa") retorna...',o:['3','4','5'],a:1,e:'São 4 caracteres (o \\0 não conta).'},
+   {q:'Para ler uma frase com espaços use...',o:['scanf("%s")','fgets','getchar'],a:1,e:'fgets lê a linha inteira.'}],
+ vetor:[{q:'int v[3] tem quantos elementos?',o:['2','3','4'],a:1,e:'3 posições: v[0], v[1], v[2].'},
+   {q:'Acessar v[3] num int v[3] é...',o:['Normal','Erro/fora do limite','Mais rápido'],a:1,e:'Válido só até v[2].'}],
+ matriz:[{q:'int m[2][3] tem quantos elementos no total?',o:['5','6','9'],a:1,e:'2 linhas × 3 colunas = 6.'},
+   {q:'A transposta troca...',o:['Sinais','Linhas por colunas','A ordem dos números'],a:1,e:'m[i][j] vira t[j][i].'}],
+ func:[{q:'O que void indica no retorno?',o:['Retorna int','Não retorna nada','Erro'],a:1,e:'A função não devolve valor.'},
+   {q:'Um vetor passado a uma função vai como...',o:['Cópia','Referência (endereço)','Texto'],a:1,e:'Por isso a função pode alterá-lo.'}],
+ ponteiro:[{q:'int *p; declara o quê?',o:['Um inteiro','Um ponteiro para int','Dois inteiros'],a:1,e:'p guarda endereço de um int.'},
+   {q:'O nome de um vetor equivale a...',o:['Seu tamanho','Um ponteiro para o 1º elemento','Sua cópia'],a:1,e:'Aponta para a primeira posição.'}],
+ struct:[{q:'Aluno turma[40]; é...',o:['40 structs','1 struct','um erro'],a:0,e:'Um vetor de 40 registros Aluno.'},
+   {q:'Acessar campo via PONTEIRO de struct usa...',o:['.','->','&'],a:1,e:'p->campo (atalho de (*p).campo).'}],
+ aloc:[{q:'Qual função ALÉM de alocar também zera a memória?',o:['malloc','calloc','free'],a:1,e:'calloc inicializa com zeros.'},
+   {q:'malloc(5*sizeof(int)) reserva espaço para...',o:['5 chars','5 inteiros','1 inteiro'],a:1,e:'5 elementos do tipo int.'}],
+ alocf:[{q:'Para redimensionar um bloco alocado use...',o:['resize','realloc','remalloc'],a:1,e:'realloc(ponteiro, novo_tamanho).'},
+   {q:'int** é...',o:['Erro','Ponteiro para ponteiro','Dois inteiros'],a:1,e:'Permite alterar o ponteiro original.'}],
+ arquivo:[{q:'Qual abre só para leitura?',o:['"w"','"r"','"a"'],a:1,e:'"r" exige que o arquivo exista.'},
+   {q:'O equivalente ao printf, mas no arquivo, é...',o:['fwrite','fprintf','fputs'],a:1,e:'fprintf(f, ...).'}],
+ recursao:[{q:'Recursão sem caso base causa...',o:['Resultado errado','Estouro de pilha','Nada'],a:1,e:'Chama-se infinitamente.'},
+   {q:'fat(4) é igual a...',o:['4 + fat(3)','4 * fat(3)','fat(3)'],a:1,e:'n * fat(n-1).'}],
+ ordbusca:[{q:'Complexidade da busca binária?',o:['O(n)','O(log n)','O(n²)'],a:1,e:'Corta pela metade a cada passo.'},
+   {q:'No Bubble Sort, o que "borbulha"?',o:['Os menores ao início','Os maiores ao fim','Nada'],a:1,e:'Maiores vão para o fim a cada passada.'}],
+ lista:[{q:'Lista vazia significa que a cabeça é...',o:['0','NULL','-1'],a:1,e:'head == NULL.'},
+   {q:'Vantagem da lista sobre o vetor?',o:['Acesso por índice','Cresce dinamicamente','Mais rápida sempre'],a:1,e:'Insere/remove sem deslocar e sem tamanho fixo.'}],
+ pilhafila:[{q:'Uma fila é...',o:['LIFO','FIFO','Aleatória'],a:1,e:'Primeiro a entrar, primeiro a sair.'},
+   {q:'Tirar o elemento do topo da pilha é...',o:['push','pop','dequeue'],a:1,e:'pop desempilha.'}],
+ modular:[{q:'O que vai dentro do arquivo .c?',o:['Só declarações','A implementação das funções','Nada'],a:1,e:'O .h declara, o .c implementa.'},
+   {q:'#define faz parte de qual etapa?',o:['Execução','Pré-processamento','Linkagem'],a:1,e:'Roda antes da compilação.'}],
+ boas:[{q:'Causa típica de bug aleatório?',o:['Variável não inicializada','Comentário','Indentação'],a:0,e:'Lixo na memória dá resultados imprevisíveis.'},
+   {q:'Boa prática depois de free(p)?',o:['p++','p = NULL','usar p'],a:1,e:'Evita reutilizar ponteiro inválido.'}],
+ projetos:[{q:'O que adicionar por último num projeto?',o:['O menu','A persistência em arquivo','As variáveis'],a:1,e:'Primeiro a lógica, depois salvar em arquivo.'},
+   {q:'Como testar funções de um projeto grande?',o:['Tudo junto no fim','Cada uma isoladamente','Não testar'],a:1,e:'Testar isolado facilita achar erros.'}],
+};
+Object.keys(QUIZ_EXTRA).forEach(k=>{QUIZ[k]=(QUIZ[k]||[]).concat(QUIZ_EXTRA[k]);});
+
+/* ============ ESTADO ============ */
+const KEY='jornadaC_v2';
+let db=load();
+function load(){
+  let d=null;try{d=JSON.parse(localStorage.getItem(KEY));}catch(e){}
+  if(!d){
+    // migra dados antigos se existirem
+    let old=null;try{old=JSON.parse(localStorage.getItem('jornadaC_v1'));}catch(e){}
+    d={topics:{},exProgress:{},custom:[],lessons:[],notes:[],helps:[]};
+    if(old){d.lessons=old.lessons||[];d.notes=old.notes||[];d.helps=old.helps||[];d.custom=old.exercises||[];}
+  }
+  d.topics=d.topics||{};d.exProgress=d.exProgress||{};d.custom=d.custom||[];
+  d.lessons=d.lessons||[];d.notes=d.notes||[];d.helps=d.helps||[];d.read=d.read||{};
+  d.srs=d.srs||{};        // srs[cardId] = {ease,interval,due,reps}
+  d.xp=d.xp||0;
+  d.streak=d.streak||{last:'',count:0};
+  d.badges=d.badges||{};
+  d.activity=d.activity||{}; // 'YYYY-MM-DD' -> nº de ações
+  d.goal=d.goal||{weekly:25}; // meta de ações por semana
+  d.pomos=d.pomos||0;
+  return d;
+}
+function save(){localStorage.setItem(KEY,JSON.stringify(db));render();}
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const today=()=>new Date().toLocaleDateString('pt-BR');
+const esc=s=>(s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const modOf=k=>COURSE.find(m=>m.key===k);
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);}
+
+/* roadmap topics: usa COURSE topics quando existem, senão deriva (módulo de exercícios = 1 tópico "praticar") */
+function moduleTopics(m){return m.topics&&m.topics.length?m.topics:['Estudar a teoria do módulo','Resolver os exercícios da lista'];}
+function tkey(mk,i){return mk+'__'+i}
+function allTopicCount(){return COURSE.reduce((a,m)=>a+moduleTopics(m).length,0);}
+function exId(mk,i){return mk+'#'+i}
+
+/* ============ MOTOR: XP, STREAK, ATIVIDADE, BADGES ============ */
+function isoDate(d){d=d||new Date();return d.toISOString().slice(0,10);}
+function dateAddDays(n){const d=new Date();d.setDate(d.getDate()+n);return isoDate(d);}
+function levelOf(xp){return Math.floor(xp/120)+1;}
+function xpInLevel(xp){return xp%120;}
+let _xpQueued=0;
+function award(n,silent){
+  db.xp+=n;_xpQueued+=n;
+  const t=isoDate();
+  db.activity[t]=(db.activity[t]||0)+1;
+  // streak
+  if(db.streak.last!==t){
+    if(db.streak.last===dateAddDays(-1))db.streak.count++;
+    else db.streak.count=1;
+    db.streak.last=t;
+  }
+  if(!silent)toast('+'+n+' XP ⚡'+(_xpQueued>n?' (+'+_xpQueued+')':''));
+  checkBadges();
+}
+const BADGES=[
+ {id:'first',ic:'🌱',n:'Primeiros passos',d:'Leu a 1ª aula',test:d=>AULA_KEYS.some(k=>d.read[k])},
+ {id:'read5',ic:'📚',n:'Estudioso',d:'Leu 5 aulas',test:d=>AULA_KEYS.filter(k=>d.read[k]).length>=5},
+ {id:'readall',ic:'🎓',n:'Apostila dominada',d:'Leu todas as aulas',test:d=>AULA_KEYS.every(k=>d.read[k])},
+ {id:'ex1',ic:'💻',n:'Mão no código',d:'Resolveu o 1º exercício',test:d=>Object.values(d.exProgress).some(p=>p.status===2)},
+ {id:'ex10',ic:'🔥',n:'Dez na conta',d:'Resolveu 10 exercícios',test:d=>Object.values(d.exProgress).filter(p=>p.status===2).length>=10},
+ {id:'ex25',ic:'🏅',n:'Maratonista',d:'Resolveu 25 exercícios',test:d=>Object.values(d.exProgress).filter(p=>p.status===2).length>=25},
+ {id:'flash50',ic:'🧠',n:'Memória de elefante',d:'50 revisões de flashcard',test:d=>(d._flashCount||0)>=50},
+ {id:'quiz',ic:'❓',n:'Sabe tudo',d:'Acertou 10 quizzes',test:d=>(d._quizRight||0)>=10},
+ {id:'streak3',ic:'⚡',n:'Pegando ritmo',d:'3 dias seguidos',test:d=>d.streak.count>=3},
+ {id:'streak7',ic:'🌟',n:'Semana cheia',d:'7 dias seguidos',test:d=>d.streak.count>=7},
+ {id:'pomo',ic:'🍅',n:'Foco total',d:'Completou 4 pomodoros',test:d=>d.pomos>=4},
+ {id:'lvl5',ic:'👑',n:'Veterano',d:'Alcançou o nível 5',test:d=>levelOf(d.xp)>=5},
+];
+function checkBadges(){let novo=false;BADGES.forEach(b=>{if(!db.badges[b.id]&&b.test(db)){db.badges[b.id]=isoDate();novo=true;setTimeout(()=>toast(b.ic+' Conquista: '+b.n+'!'),300);}});return novo;}
+
+/* ============ MOTOR: REPETIÇÃO ESPAÇADA (SM-2 simplificado) ============ */
+function allCards(){const arr=[];COURSE.forEach(m=>{(FLASH[m.key]||[]).forEach((c,i)=>arr.push({id:m.key+':'+i,mk:m.key,front:c[0],back:c[1]}));});return arr;}
+function dueCards(){const t=isoDate();return allCards().filter(c=>{const s=db.srs[c.id];return !s||s.due<=t;});}
+function gradeCard(id,grade){ // grade: 0=errei, 1=bom, 2=fácil
+  let s=db.srs[id]||{ease:2.5,interval:0,reps:0};
+  if(grade===0){s.reps=0;s.interval=0;s.ease=Math.max(1.3,s.ease-0.2);s.due=isoDate();}
+  else{s.reps++;
+    if(s.reps===1)s.interval=grade===2?2:1;
+    else if(s.reps===2)s.interval=grade===2?5:3;
+    else s.interval=Math.round(s.interval*s.ease);
+    if(grade===2)s.ease+=0.1;
+    s.due=dateAddDays(s.interval);}
+  db.srs[id]=s;
+  db._flashCount=(db._flashCount||0)+1;
+  award(grade===0?2:5,true);
+  save();
+}
+
+/* ============ NAVEGAÇÃO ============ */
+document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');document.getElementById('v-'+b.dataset.view).classList.add('active');
+});
+
+/* ============ ROADMAP ============ */
+function renderRoadmap(){
+  const wrap=document.getElementById('roadmap');wrap.innerHTML='';
+  COURSE.forEach(m=>{
+    const tp=moduleTopics(m);
+    const done=tp.filter((_,i)=>(db.topics[tkey(m.key,i)]||{}).status===2).length;
+    const pct=Math.round(done/tp.length*100);
+    const exTotal=(m.ex||[]).length;
+    const exDone=(m.ex||[]).filter((_,i)=>(db.exProgress[exId(m.key,i)]||{}).status===2).length;
+    const el=document.createElement('div');el.className='phase'+(m._open?' open':'');
+    el.innerHTML=`<div class="phase-head">
+        <div class="phase-icon" style="background:${m.color}22;color:${m.color}">${m.icon}</div>
+        <h3>${m.name}</h3>
+        ${exTotal?`<span class="ex-count">💻 ${exDone}/${exTotal}</span>`:''}
+        <span class="pct">${done}/${tp.length}</span>
+        <div class="phase-bar"><div style="width:${pct}%"></div></div>
+        <span class="chev">▶</span></div>
+      <div class="topics">
+        <div class="mod-actions">
+          ${TEACH[m.key]&&TEACH[m.key].theory?`<button class="btn ghost sm" onclick="openTheory('${m.key}')">📖 Teoria do professor</button>`:''}
+          ${TEACH[m.key]&&TEACH[m.key].examples&&TEACH[m.key].examples.length?`<button class="btn ghost sm" onclick="openExamples('${m.key}')">💡 Exemplos (por nível)</button>`:''}
+          ${m.ex&&m.ex.length?`<button class="btn ghost sm" onclick="goModExercises('${m.key}')">💻 Exercícios deste módulo</button>`:''}
+        </div>
+        ${tp.map((t,i)=>topicRow(m.key,i,t)).join('')}</div>`;
+    el.querySelector('.phase-head').onclick=()=>{m._open=!m._open;el.classList.toggle('open')};
+    wrap.appendChild(el);
+  });
+}
+function topicRow(mk,i,name){
+  const k=tkey(mk,i);const d=db.topics[k]||{status:0,diff:0,note:''};
+  const cls=d.status===2?'done':d.status===1?'study':'';
+  const dots=[1,2,3,4,5].map(n=>`<span class="dot ${d.diff>=n?'on'+d.diff:''}" onclick="setDiff('${k}',${n})"></span>`).join('');
+  return `<div class="topic ${d.status===2?'is-done':''}">
+    <button class="tcheck ${cls}" onclick="cycleStatus('${k}')"></button>
+    <span class="tname" onclick="cycleStatus('${k}')">${esc(name)}</span>
+    <span class="diff-dots" title="Dificuldade 1-5">${dots}</span>
+    <button class="tnote-btn ${d.note?'has':''}" onclick="toggleTnote('${k}',this)">📒</button>
+    <div class="topic-note" id="tn-${k}"><textarea placeholder="Anotação deste tópico..." onblur="setTnote('${k}',this.value)">${esc(d.note)}</textarea></div></div>`;
+}
+function cycleStatus(k){const d=db.topics[k]||{status:0,diff:0,note:''};d.status=(d.status+1)%3;db.topics[k]=d;save();}
+function setDiff(k,n){const d=db.topics[k]||{status:0,diff:0,note:''};d.diff=d.diff===n?0:n;db.topics[k]=d;save();}
+function setTnote(k,v){const d=db.topics[k]||{status:0,diff:0,note:''};d.note=v;db.topics[k]=d;localStorage.setItem(KEY,JSON.stringify(db));}
+function toggleTnote(k,btn){const el=document.getElementById('tn-'+k);const show=el.style.display!=='block';el.style.display=show?'block':'none';if(show)el.querySelector('textarea').focus();}
+
+/* ============ MODAL ============ */
+const overlay=document.getElementById('overlay'),modal=document.getElementById('modal');
+function showModal(html){modal.innerHTML=html;overlay.classList.add('show');modal.scrollTop=0;}
+function closeModal(){overlay.classList.remove('show');}
+overlay.onclick=e=>{if(e.target===overlay)closeModal();};
+
+/* ============ EXERCÍCIOS — workspace ============ */
+const STARTER='#include <stdio.h>\n#include <stdlib.h>\n\nint main() {\n    \n    return 0;\n}\n';
+const EVALS=[['solo','✅ Acertei sozinho'],['help','🙂 Acertei com ajuda'],['stuck','😖 Travei / errei'],['none','⬜ Ainda não tentei']];
+
+function openWork(mk,i){
+  const m=modOf(mk),exo=m.ex[i],id=exId(mk,i);
+  const p=db.exProgress[id]||{status:0,diff:0,code:'',note:'',eval:'none'};
+  showModal(`<h3>${esc(m.icon)} ${esc(exo.t)}</h3>
+    <p style="color:var(--muted);font-size:13px">${esc(m.name)} · exercício ${i+1}</p>
+    <div class="statement-box">${esc(exo.s)}</div>
+    <div class="field"><label>👨‍💻 Meu código</label>
+      <textarea id="w-code" class="code" spellcheck="false" placeholder="Escreva seu código C aqui...">${esc(p.code||STARTER)}</textarea></div>
+    <div class="modal-actions" style="justify-content:flex-start;margin-bottom:14px">
+      <button class="btn run sm" onclick="runOnline()">▶ Rodar no compilador online</button>
+      <button class="btn ghost sm" onclick="document.getElementById('w-code').value=STARTER">↺ Limpar (template)</button>
+    </div>
+    <div class="field"><label>Como foi? (autoavaliação)</label>
+      <div class="eval-grid" id="w-eval">${EVALS.map(([v,l])=>`<div class="eval-opt ${p.eval===v?'sel':''}" data-v="${v}" onclick="selEval(this)">${l}</div>`).join('')}</div></div>
+    <div class="row">
+      <div class="field"><label>Status</label><select id="w-status">
+        <option value="0"${p.status===0?' selected':''}>A fazer</option>
+        <option value="1"${p.status===1?' selected':''}>Resolvendo</option>
+        <option value="2"${p.status===2?' selected':''}>Resolvido ✅</option></select></div>
+      <div class="field"><label>Dificuldade sentida (1 fácil → 5 difícil)</label><select id="w-diff">
+        ${[0,1,2,3,4,5].map(n=>`<option value="${n}"${p.diff===n?' selected':''}>${n===0?'— não avaliado':'★'.repeat(n)+' ('+n+')'}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>📌 Anotações / onde travei</label><textarea id="w-note" placeholder="O que aprendi, onde errei, o que perguntar ao Claude...">${esc(p.note)}</textarea></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeModal()">Fechar</button>
+      <button class="btn" onclick="saveWork('${mk}',${i})">💾 Salvar progresso</button>
+    </div>`);
+}
+let _evalSel=null;
+function selEval(el){document.querySelectorAll('#w-eval .eval-opt').forEach(x=>x.classList.remove('sel'));el.classList.add('sel');_evalSel=el.dataset.v;}
+function saveWork(mk,i){
+  const g=x=>document.getElementById(x).value;
+  const id=exId(mk,i);
+  const prev=(db.exProgress[id]||{}).status;
+  db.exProgress[id]={status:+g('w-status'),diff:+g('w-diff'),code:g('w-code'),note:g('w-note'),
+    eval:_evalSel||(db.exProgress[id]||{}).eval||'none',date:today()};
+  _evalSel=null;closeModal();
+  if(+g('w-status')===2&&prev!==2)award(15);else toast('Progresso salvo ✅');
+  save();
+}
+function runOnline(){
+  const code=document.getElementById('w-code').value;
+  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>{},()=>{});
+  window.open('https://www.onlinegdb.com/online_c_compiler','_blank');
+  toast('Código copiado! Cole (Ctrl+V) no compilador que abriu 📋');
+}
+
+/* ============ EXERCÍCIOS — lista ============ */
+function renderEx(){
+  const q=(document.getElementById('ex-search').value||'').toLowerCase();
+  const fmod=document.getElementById('ex-filter').value;
+  const fstat=document.getElementById('ex-stat').value;
+  const list=document.getElementById('ex-list');list.innerHTML='';
+  let shown=0;
+  COURSE.forEach(m=>{
+    if(!m.ex||!m.ex.length)return;
+    if(fmod&&fmod!==m.key)return;
+    const rows=m.ex.map((exo,i)=>({exo,i})).filter(({exo,i})=>{
+      const p=db.exProgress[exId(m.key,i)]||{status:0};
+      if(fstat!==''&&p.status!==+fstat)return false;
+      return (exo.t+exo.s).toLowerCase().includes(q);
+    });
+    if(!rows.length)return;
+    shown+=rows.length;
+    const done=m.ex.filter((_,i)=>(db.exProgress[exId(m.key,i)]||{}).status===2).length;
+    const g=document.createElement('div');g.className='mod-group';
+    g.innerHTML=`<div class="mh"><div class="mi" style="background:${m.color}22;color:${m.color}">${m.icon}</div>
+      <h3>${esc(m.name)}</h3><span class="done-c">${done}/${m.ex.length} resolvidos</span></div>`+
+      rows.map(({exo,i})=>exCard(m,exo,i)).join('');
+    list.appendChild(g);
+  });
+  // custom
+  const custom=db.custom.filter(e=>(!fmod)&&(e.title+e.statement).toLowerCase().includes(q)&&(fstat===''||(e.status||0)==+fstat));
+  if(custom.length){
+    const g=document.createElement('div');g.className='mod-group';
+    g.innerHTML=`<div class="mh"><div class="mi" style="background:#3b82f622;color:#3b82f6">✍️</div><h3>Meus exercícios</h3></div>`+
+      custom.map(e=>customCard(e)).join('');
+    list.appendChild(g);shown+=custom.length;
+  }
+  if(!shown)list.innerHTML=`<div class="empty"><div class="big">🔍</div><h3>Nada encontrado</h3><p>Ajuste a busca ou os filtros</p></div>`;
+}
+function exCard(m,exo,i){
+  const p=db.exProgress[exId(m.key,i)]||{status:0,diff:0};
+  const sl=['A fazer','Resolvendo','Resolvido'][p.status||0];
+  return `<div class="item clickable" onclick="openWork('${m.key}',${i})">
+    <div class="item-head"><h4><span class="item-num">${i+1}.</span> ${esc(exo.t)}</h4>
+      <span class="tag s-${p.status||0}">${sl}</span></div>
+    <div class="item-body">${esc(exo.s.length>140?exo.s.slice(0,140)+'…':exo.s)}</div>
+    <div class="item-foot">
+      ${p.code&&p.code.replace(STARTER,'').trim()?'<span class="mini-prog">📝 com código salvo</span>':'<span class="mini-prog" style="color:var(--muted2)">sem código ainda</span>'}
+      ${p.diff?`<span class="stars">${'★'.repeat(p.diff)}</span>`:''}
+      <span style="margin-left:auto;color:var(--acc);font-size:13px;font-weight:600">Abrir ▸</span></div></div>`;
+}
+
+/* ============ MEUS EXERCÍCIOS ============ */
+function openCustom(id){
+  const e=id?db.custom.find(x=>x.id===id):{title:'',statement:'',code:'',solution:'',status:0,diff:0,note:''};
+  showModal(`<h3>${id?'Editar':'Novo'} exercício meu ✍️</h3>
+    <div class="field"><label>Título</label><input id="c-title" value="${esc(e.title)}" placeholder="Ex: Exercício extra de ponteiros"></div>
+    <div class="field"><label>Enunciado</label><textarea id="c-statement" placeholder="O que o exercício pede...">${esc(e.statement)}</textarea></div>
+    <div class="field"><label>Meu código</label><textarea id="c-code" class="code" spellcheck="false">${esc(e.code)}</textarea></div>
+    <div class="field"><label>Solução / explicação</label><textarea id="c-solution" class="code" spellcheck="false">${esc(e.solution)}</textarea></div>
+    <div class="row">
+      <div class="field"><label>Status</label><select id="c-status">${[0,1,2].map(n=>`<option value="${n}"${(e.status||0)===n?' selected':''}>${['A fazer','Resolvendo','Resolvido'][n]}</option>`).join('')}</select></div>
+      <div class="field"><label>Dificuldade</label><select id="c-diff">${[0,1,2,3,4,5].map(n=>`<option value="${n}"${(e.diff||0)===n?' selected':''}>${n===0?'—':'★'.repeat(n)}</option>`).join('')}</select></div>
+    </div>
+    <div class="field"><label>Observações</label><textarea id="c-note">${esc(e.note)}</textarea></div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn" onclick="saveCustom('${id||''}')">Salvar</button></div>`);
+}
+function saveCustom(id){
+  const g=x=>document.getElementById(x).value;
+  const o={title:g('c-title')||'(sem título)',statement:g('c-statement'),code:g('c-code'),solution:g('c-solution'),status:+g('c-status'),diff:+g('c-diff'),note:g('c-note')};
+  let prev=0;
+  if(id){const c=db.custom.find(x=>x.id===id);prev=c.status||0;Object.assign(c,o);}
+  else{o.id=uid();o.date=today();db.custom.unshift(o);}
+  closeModal();if(o.status===2&&prev!==2)award(10);save();
+}
+function customCard(e){
+  const sl=['A fazer','Resolvendo','Resolvido'][e.status||0];
+  return `<div class="item">
+    <div class="item-head"><h4>${esc(e.title)}</h4><span class="tag s-${e.status||0}">${sl}</span></div>
+    ${e.statement?`<div class="item-body">${esc(e.statement)}</div>`:''}
+    ${e.code?`<div class="item-code">${esc(e.code)}</div>`:''}
+    ${e.solution?`<details style="margin-top:8px"><summary style="cursor:pointer;color:var(--acc);font-size:13px">Ver solução</summary><div class="item-code">${esc(e.solution)}</div></details>`:''}
+    ${e.note?`<div class="item-body" style="margin-top:8px;font-style:italic">📌 ${esc(e.note)}</div>`:''}
+    <div class="item-foot"><span class="date">${e.date||''}</span>${e.diff?`<span class="stars">${'★'.repeat(e.diff)}</span>`:''}
+      <button class="icon-btn" onclick="openCustom('${e.id}')">✏️</button>
+      <button class="icon-btn del" onclick="delItem('custom','${e.id}')">🗑️</button></div></div>`;
+}
+
+/* ============ APOSTILA (aulas teóricas) ============ */
+const AULA_KEYS=COURSE.filter(m=>AULAS[m.key]).map(m=>m.key);
+function renderLe(){
+  const q=(document.getElementById('le-search').value||'').toLowerCase();
+  const list=document.getElementById('le-list');
+  const total=AULA_KEYS.length, lidas=AULA_KEYS.filter(k=>db.read[k]).length;
+  document.getElementById('au-prog').textContent=`${lidas} / ${total} aulas`;
+  document.getElementById('au-bar').style.width=(total?lidas/total*100:0)+'%';
+  const items=AULA_KEYS.map((k,n)=>({m:modOf(k),a:AULAS[k],n})).filter(({m,a})=>{
+    const txt=(m.name+' '+a.sections.map(s=>s.h+' '+s.p).join(' ')).toLowerCase();
+    return txt.includes(q);
+  });
+  if(!items.length){list.innerHTML=emptyMsg('🔍','Nada encontrado','Tente outro termo');return;}
+  list.innerHTML=items.map(({m,a,n})=>{
+    const lida=db.read[m.key];
+    return `<div class="item clickable" onclick="openAula('${m.key}')">
+      <div class="item-head">
+        <div class="phase-icon" style="width:34px;height:34px;background:${m.color}22;color:${m.color};font-size:16px">${m.icon}</div>
+        <h4 style="align-self:center"><span class="item-num">Aula ${n+1}.</span> ${esc(m.name)}</h4>
+        ${lida?'<span class="tag s-2">✓ Lida</span>':'<span class="tag s-0">A ler</span>'}</div>
+      <div class="item-body">${esc(a.sections[0].p.split('\n')[0].slice(0,130))}…</div>
+      <div class="item-foot"><span class="date">📖 ${a.sections.length} seções · ${a.dur} de leitura</span>
+        <span style="margin-left:auto;color:var(--acc);font-size:13px;font-weight:600">Abrir aula ▸</span></div></div>`;
+  }).join('');
+}
+function aulaSectionHtml(s){
+  const boxCls=s.box==='atenção'?'box-warn':s.box==='dica'?'box-tip':'';
+  const ico=s.box==='atenção'?'⚠️ Atenção: ':s.box==='dica'?'💡 Dica: ':'';
+  return `<div class="au-sec ${boxCls}">
+    <h4 class="au-h">${esc(s.h)}</h4>
+    <p class="au-p">${ico}${esc(s.p)}</p>
+    ${s.code?`<div class="item-code">${esc(s.code)}</div>`:''}</div>`;
+}
+function openAula(key){
+  const m=modOf(key),a=AULAS[key];if(!a)return;
+  const idx=AULA_KEYS.indexOf(key);
+  const prev=idx>0?AULA_KEYS[idx-1]:null, next=idx<AULA_KEYS.length-1?AULA_KEYS[idx+1]:null;
+  const lida=db.read[key];
+  showModal(`<div class="au-top">
+      <div class="phase-icon" style="background:${m.color}22;color:${m.color};font-size:20px">${m.icon}</div>
+      <div><div style="font-size:12px;color:var(--muted)">Aula ${idx+1} de ${AULA_KEYS.length} · ${a.dur}</div>
+      <h3 style="margin:0">${esc(m.name)}</h3></div></div>
+    <div class="au-body">${a.sections.map(aulaSectionHtml).join('')}
+      <div class="au-resumo"><b>📌 Resumo:</b> ${esc(a.resumo)}</div>
+      <div class="au-links">
+        ${TEACH[key]&&TEACH[key].examples?`<button class="btn ghost sm" onclick="openExamples('${key}')">💡 Ver exemplos deste tema</button>`:''}
+        ${m.ex&&m.ex.length?`<button class="btn ghost sm" onclick="closeModal();goModExercises('${key}')">💻 Praticar exercícios</button>`:''}
+      </div></div>
+    <div class="au-nav">
+      <button class="btn ghost sm" ${prev?`onclick="openAula('${prev}')"`:'disabled style=opacity:.4'}>◂ Anterior</button>
+      <button class="btn ${lida?'ghost':''} sm" onclick="toggleRead('${key}')">${lida?'✓ Marcada como lida':'Marcar como lida ✓'}</button>
+      <button class="btn ghost sm" ${next?`onclick="openAula('${next}')"`:'disabled style=opacity:.4'}>Próxima ▸</button>
+    </div>`);
+  modal.scrollTop=0;
+}
+function toggleRead(key){
+  if(db.read[key])delete db.read[key];else{db.read[key]=true;award(10);}
+  save();openAula(key);
+}
+
+/* ============ ANOTAÇÕES ============ */
+function openNo(id){
+  const e=id?db.notes.find(x=>x.id===id):{title:'',mod:'',body:''};
+  showModal(`<h3>${id?'Editar':'Nova'} anotação 📝</h3>
+    <div class="row"><div class="field"><label>Título</label><input id="m-title" value="${esc(e.title)}"></div>
+      <div class="field"><label>Módulo</label><select id="m-mod">${modOptions(e.mod)}</select></div></div>
+    <div class="field"><label>Conteúdo</label><textarea id="m-body" style="min-height:160px">${esc(e.body)}</textarea></div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn" onclick="saveNo('${id||''}')">Salvar</button></div>`);
+}
+function saveNo(id){const g=x=>document.getElementById(x).value;
+  const o={title:g('m-title')||'(anotação)',mod:g('m-mod'),body:g('m-body')};
+  if(id)Object.assign(db.notes.find(x=>x.id===id),o);else{o.id=uid();o.date=today();db.notes.unshift(o);}
+  closeModal();save();}
+function renderNo(){
+  const q=(document.getElementById('no-search').value||'').toLowerCase();
+  const list=document.getElementById('no-list');
+  const items=db.notes.filter(e=>(e.title+e.body).toLowerCase().includes(q));
+  if(!items.length){list.innerHTML=emptyMsg('📝','Nenhuma anotação','Guarde aqui conceitos e macetes seus');return;}
+  list.innerHTML=items.map(e=>`<div class="item">
+    <div class="item-head"><h4>${esc(e.title)}</h4>${e.mod?`<span class="tag mod">${esc(modName(e.mod))}</span>`:''}</div>
+    <div class="item-body">${esc(e.body)}</div>
+    <div class="item-foot"><span class="date">${e.date||''}</span>
+      <button class="icon-btn" onclick="openNo('${e.id}')">✏️</button><button class="icon-btn del" onclick="delItem('notes','${e.id}')">🗑️</button></div></div>`).join('');
+}
+
+/* ============ AJUDAS ============ */
+function openHe(id){
+  const e=id?db.helps.find(x=>x.id===id):{title:'',mod:'',body:''};
+  showModal(`<h3>${id?'Editar':'Registrar'} ajuda 🤖</h3>
+    <div class="row"><div class="field"><label>Assunto</label><input id="m-title" value="${esc(e.title)}"></div>
+      <div class="field"><label>Módulo</label><select id="m-mod">${modOptions(e.mod)}</select></div></div>
+    <div class="field"><label>Explicação / correção recebida</label><textarea id="m-body" style="min-height:180px">${esc(e.body)}</textarea></div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn" onclick="saveHe('${id||''}')">Salvar</button></div>`);
+}
+function saveHe(id){const g=x=>document.getElementById(x).value;
+  const o={title:g('m-title')||'(ajuda)',mod:g('m-mod'),body:g('m-body')};
+  if(id)Object.assign(db.helps.find(x=>x.id===id),o);else{o.id=uid();o.date=today();db.helps.unshift(o);}
+  closeModal();save();}
+function renderHe(){
+  const q=(document.getElementById('he-search').value||'').toLowerCase();
+  const f=document.getElementById('he-filter').value;
+  const list=document.getElementById('he-list');
+  const items=db.helps.filter(e=>(!f||e.mod===f)&&(e.title+e.body).toLowerCase().includes(q));
+  if(!items.length){list.innerHTML=emptyMsg('🤖','Nenhuma ajuda registrada','Salve aqui as explicações que eu te der no chat');return;}
+  list.innerHTML=items.map(e=>`<div class="item">
+    <div class="item-head"><h4>${esc(e.title)}</h4>${e.mod?`<span class="tag mod">${esc(modName(e.mod))}</span>`:''}</div>
+    <div class="item-body">${esc(e.body)}</div>
+    <div class="item-foot"><span class="date">${e.date||''}</span>
+      <button class="icon-btn" onclick="openHe('${e.id}')">✏️</button><button class="icon-btn del" onclick="delItem('helps','${e.id}')">🗑️</button></div></div>`).join('');
+}
+
+/* ============ DIFICULDADES ============ */
+function moduleDifficulty(){
+  return COURSE.map(m=>{
+    const vals=[];
+    moduleTopics(m).forEach((_,i)=>{const d=db.topics[tkey(m.key,i)];if(d&&d.diff)vals.push(d.diff);});
+    (m.ex||[]).forEach((_,i)=>{const p=db.exProgress[exId(m.key,i)];
+      if(p){if(p.diff)vals.push(p.diff);if(p.eval==='stuck')vals.push(4);if(p.eval==='help')vals.push(3);}});
+    return {name:m.name,icon:m.icon,avg:vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:0,n:vals.length};
+  }).filter(d=>d.n>0).sort((a,b)=>b.avg-a.avg);
+}
+const diffColor=v=>v>=4?'var(--red)':v>=3?'var(--orange)':v>=2?'var(--yellow)':'var(--green)';
+function diffRow(d){return `<div class="diff-row"><span class="dn">${d.icon?d.icon+' ':''}${esc(d.name)}</span>
+  <div class="meter"><div style="width:${d.avg/5*100}%;background:${diffColor(d.avg)}"></div></div>
+  <span class="val" style="color:${diffColor(d.avg)}">${d.avg.toFixed(1)}</span></div>`;}
+function renderDifficulty(){
+  const data=moduleDifficulty();
+  document.getElementById('diff-dash').innerHTML=data.length?data.map(diffRow).join('')
+    :emptyMsg('🎯','Sem dados ainda','Avalie tópicos no Roadmap e exercícios para ver o mapa');
+  // hard exercises
+  const hard=[];
+  COURSE.forEach(m=>(m.ex||[]).forEach((exo,i)=>{const p=db.exProgress[exId(m.key,i)];
+    if(p&&(p.diff>=4||p.eval==='stuck'))hard.push({m,exo,i,p});}));
+  document.getElementById('hard-ex').innerHTML=hard.length?hard.map(({m,exo,i,p})=>
+    `<div class="diff-row" style="cursor:pointer" onclick="goEx('${m.key}',${i})"><span class="dn">${m.icon} ${esc(exo.t)}</span>
+     <span style="font-size:12px;color:var(--muted)">${esc(m.name)}</span>
+     <span class="stars">${p.diff?'★'.repeat(p.diff):'😖'}</span></div>`).join('')
+    :`<p style="color:var(--muted2);font-size:14px">Nenhum exercício marcado como difícil ainda. 👍</p>`;
+}
+function goEx(mk,i){document.querySelector('[data-view="exercises"]').click();openWork(mk,i);}
+
+/* ============ DASHBOARD ============ */
+function renderDash(){
+  const total=allTopicCount();
+  const done=Object.values(db.topics).filter(t=>t.status===2).length;
+  const pct=total?Math.round(done/total*100):0;
+  document.getElementById('s-prog').textContent=pct+'%';
+  document.getElementById('p-bar').style.width=pct+'%';
+  document.getElementById('p-txt').textContent=`${done} / ${total} tópicos`;
+  const exDone=Object.values(db.exProgress).filter(p=>p.status===2).length+db.custom.filter(e=>e.status===2).length;
+  document.getElementById('s-exdone').textContent=exDone;
+  document.getElementById('s-le').textContent=AULA_KEYS.filter(k=>db.read[k]).length;
+  const data=moduleDifficulty();
+  document.getElementById('s-hard').textContent=data.length?data[0].icon+' '+data[0].name.split(' ')[0]:'—';
+  // ex by module
+  const byMod=COURSE.filter(m=>m.ex&&m.ex.length).map(m=>{
+    const d=m.ex.filter((_,i)=>(db.exProgress[exId(m.key,i)]||{}).status===2).length;
+    return {m,d,t:m.ex.length};});
+  document.getElementById('ex-by-mod').innerHTML=byMod.map(({m,d,t})=>
+    `<div class="diff-row"><span class="dn">${m.icon} ${esc(m.name)}</span>
+     <div class="meter"><div style="width:${d/t*100}%;background:${m.color}"></div></div>
+     <span class="val" style="color:${m.color}">${d}/${t}</span></div>`).join('');
+  const focus=document.getElementById('focus-list');const top=data.slice(0,5);
+  focus.innerHTML=top.length?top.map(diffRow).join('')
+    :`<p style="color:var(--muted2);font-size:14px">Avalie a dificuldade dos tópicos e exercícios para ver onde focar. 🎯</p>`;
+}
+
+/* ============ COMUNS ============ */
+function modOptions(sel){return '<option value="">— sem módulo —</option>'+COURSE.map(m=>`<option value="${m.key}"${m.key===sel?' selected':''}>${esc(m.name)}</option>`).join('');}
+function modName(k){const m=modOf(k);return m?m.name:k;}
+function emptyMsg(ico,t,s){return `<div class="empty"><div class="big">${ico}</div><h3>${t}</h3><p>${s}</p></div>`;}
+function delItem(coll,id){if(confirm('Excluir este item?')){db[coll]=db[coll].filter(x=>x.id!==id);save();}}
+function fillFilters(){
+  const opts='<option value="">Todos os módulos</option>'+COURSE.map(m=>`<option value="${m.key}">${esc(m.name)}</option>`).join('');
+  ['ex-filter','he-filter'].forEach(id=>{const el=document.getElementById(id);const v=el.value;el.innerHTML=opts;el.value=v;});
+}
+function render(){
+  renderRoadmap();renderTrilha();renderEx();renderLe();renderNo();renderHe();renderDifficulty();renderDash();renderReview();renderProgress();
+  const exTotal=COURSE.reduce((a,m)=>a+(m.ex?m.ex.length:0),0)+db.custom.length;
+  document.getElementById('b-ex').textContent=exTotal;
+  document.getElementById('b-le').textContent=AULA_KEYS.filter(k=>db.read[k]).length;
+  document.getElementById('b-no').textContent=db.notes.length;
+  document.getElementById('b-he').textContent=db.helps.length;
+}
+['ex-search','ex-filter','ex-stat'].forEach(id=>document.getElementById(id).oninput=renderEx);
+document.getElementById('le-search').oninput=renderLe;
+document.getElementById('no-search').oninput=renderNo;
+['he-search','he-filter'].forEach(id=>document.getElementById(id).oninput=renderHe);
+
+/* Tab key inside code textareas */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Tab'&&e.target.classList.contains('code')){e.preventDefault();
+    const t=e.target,s=t.selectionStart;t.value=t.value.slice(0,s)+'    '+t.value.slice(t.selectionEnd);t.selectionStart=t.selectionEnd=s+4;}
+});
+
+/* ============ TEORIA & EXEMPLOS ============ */
+function openTheory(mk){
+  const m=modOf(mk),t=TEACH[mk];if(!t)return;
+  showModal(`<h3>${m.icon} ${esc(m.name)} — Teoria 📖</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Explicação do professor "Sistema"</p>
+    <div class="statement-box" style="border-left-color:${m.color}">${esc(t.theory)}</div>
+    <div class="modal-actions">
+      ${t.examples&&t.examples.length?`<button class="btn" onclick="openExamples('${mk}')">💡 Ver exemplos</button>`:''}
+      <button class="btn ghost" onclick="closeModal()">Fechar</button></div>`);
+}
+const LVLNAME=['Básico','Intermediário','Avançado'];
+function lvlIndex(l){const i=LVLNAME.indexOf(l);return i<0?0:i;}
+function openExamples(mk){
+  const m=modOf(mk),t=TEACH[mk];if(!t||!t.examples)return;
+  const exs=t.examples;
+  // descobrir níveis presentes
+  const levels=[...new Set(exs.map(e=>lvlIndex(e.lvl)))].sort();
+  const tabs=levels.map(li=>`<div class="lvl-tab l${li} ${li===levels[0]?'on':''}" data-li="${li}" onclick="switchLvl(this)">${['🟢','🟡','🔴'][li]} ${LVLNAME[li]}</div>`).join('');
+  const steps=(STEPS[mk]||[]);
+  const blocks=exs.map((e,idx)=>{const li=lvlIndex(e.lvl);
+    const st=steps[idx]||[];
+    const stHtml=st.length?`<div class="reason"><div class="reason-h">🧠 Raciocínio passo a passo — como eu pensei para resolver:</div><ol class="reason-list">${st.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>`:'';
+    return `<div class="ex-block ${li===levels[0]?'show':''}" data-li="${li}">
+      <div class="ex-title">${esc(e.t)} <span class="lvl-badge l${li}">${LVLNAME[li]}</span></div>
+      ${stHtml}
+      <div class="code-label">👨‍💻 Código resultante:</div>
+      <div class="item-code">${esc(e.code)}</div>
+      <div class="ex-explain">💬 ${esc(e.ex)}</div>
+      <div style="margin-top:10px"><button class="btn run sm" onclick="runSnippet(${idx},'${mk}')">▶ Rodar no compilador</button></div>
+    </div>`;}).join('');
+  showModal(`<h3>${m.icon} ${esc(m.name)} — Exemplos 💡</h3>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">Escolha o nível de dificuldade:</p>
+    <div class="lvl-tabs">${tabs}</div>
+    <div id="ex-blocks">${blocks}</div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal()">Fechar</button></div>`);
+}
+function switchLvl(tab){
+  document.querySelectorAll('.lvl-tabs .lvl-tab').forEach(t=>t.classList.remove('on'));
+  tab.classList.add('on');
+  const li=tab.dataset.li;
+  document.querySelectorAll('#ex-blocks .ex-block').forEach(b=>b.classList.toggle('show',b.dataset.li===li));
+}
+function runSnippet(idx,mk){
+  const code=TEACH[mk].examples[idx].code;
+  navigator.clipboard&&navigator.clipboard.writeText(code).then(()=>{},()=>{});
+  window.open('https://www.onlinegdb.com/online_c_compiler','_blank');
+  toast('Exemplo copiado! Cole (Ctrl+V) no compilador 📋');
+}
+function goModExercises(mk){document.querySelector('[data-view="exercises"]').click();
+  document.getElementById('ex-filter').value=mk;renderEx();}
+
+/* ============ TRILHA ANIMADA (fluxograma SVG) ============ */
+function modStatus(m){
+  const tp=moduleTopics(m);
+  const done=tp.filter((_,i)=>(db.topics[tkey(m.key,i)]||{}).status===2).length;
+  const study=tp.some((_,i)=>{const s=(db.topics[tkey(m.key,i)]||{}).status;return s===1;});
+  if(done===tp.length)return 'done';
+  if(done>0||study)return 'study';
+  return 'todo';
+}
+function renderTrilha(){
+  const wrap=document.getElementById('trilha-wrap');
+  const cols=3, colW=300, rowH=150, padX=70, padY=70;
+  const n=COURSE.length, rows=Math.ceil(n/cols);
+  const W=padX*2+(cols-1)*colW, H=padY*2+(rows-1)*rowH;
+  // posições em boustrophedon (zig-zag)
+  const pos=COURSE.map((m,idx)=>{
+    const r=Math.floor(idx/cols); let c=idx%cols;
+    if(r%2===1)c=cols-1-c; // inverte direção nas linhas ímpares
+    return {x:padX+c*colW, y:padY+r*rowH, m, idx};
+  });
+  // status / índice atual (1ª não concluída)
+  const statuses=COURSE.map(m=>modStatus(m));
+  let current=statuses.findIndex(s=>s!=='done'); if(current<0)current=n-1;
+  // paths entre consecutivos
+  let paths='';
+  for(let i=0;i<n-1;i++){
+    const a=pos[i],b=pos[i+1];
+    const mx=(a.x+b.x)/2;
+    const d=`M ${a.x} ${a.y} C ${mx} ${a.y}, ${mx} ${b.y}, ${b.x} ${b.y}`;
+    const lit=i<current; // trecho já conquistado
+    paths+=`<path class="trilha-path ${lit?'lit':''}" d="${d}"/>`;
+    if(lit)paths+=`<path class="trilha-flow" d="${d}"/>`;
+  }
+  const nodes=pos.map(({x,y,m,idx})=>{
+    const s=statuses[idx];
+    const col=s==='done'?'#22c55e':s==='study'?'#eab308':'#2b3650';
+    const ring=s==='done'?'#22c55e':s==='study'?'#eab308':'#3b82f6';
+    const emoji=s==='done'?'✓':m.icon;
+    const cur=idx===current?'current':'';
+    const label=m.name.length>26?m.name.slice(0,24)+'…':m.name;
+    return `<g class="tnode ${s} ${cur}" onclick="trilhaClick('${m.key}')">
+      <circle class="ring" cx="${x}" cy="${y}" r="34" fill="none" stroke="${ring}" stroke-width="2" opacity="${cur ? 0.6 : 0}"/>
+      <circle class="bg" cx="${x}" cy="${y}" r="28" fill="${col}" stroke="${ring}" stroke-width="2.5"/>
+      <text x="${x}" y="${y}" text-anchor="middle" dominant-baseline="central" font-size="${s==='done'?22:20}">${esc(emoji)}</text>
+      <text class="lbl" x="${x}" y="${y+46}" text-anchor="middle">${esc(label)}</text>
+      <text x="${x}" y="${y-40}" text-anchor="middle" font-size="11" fill="var(--muted2)">${idx+1}</text>
+    </g>`;
+  }).join('');
+  _trilhaPos=pos.map(p=>({x:p.x,y:p.y,key:p.m.key,name:p.m.name,icon:p.m.icon}));
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" style="max-width:none">
+    <defs><linearGradient id="tg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3b82f6"/><stop offset="1" stop-color="#8b5cf6"/></linearGradient>
+      <radialGradient id="trav"><stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#8b5cf6"/></radialGradient></defs>
+    ${paths}${nodes}
+    <circle id="traveler" r="13" fill="url(#trav)" opacity="0" stroke="#fff" stroke-width="2" filter="drop-shadow(0 0 8px #8b5cf6)"/></svg>`;
+  // stats
+  const dn=statuses.filter(s=>s==='done').length, st=statuses.filter(s=>s==='study').length;
+  document.getElementById('trilha-stats').innerHTML=
+    `<div class="ls"><b>${dn}</b> 🟢 dominados</div>
+     <div class="ls"><b>${st}</b> 🟡 em andamento</div>
+     <div class="ls"><b>${n-dn-st}</b> ⚪ a estudar</div>
+     <div class="ls">Estação atual: <b style="font-size:13px">${esc(COURSE[current].icon+' '+COURSE[current].name)}</b></div>`;
+}
+let _trilhaPos=[],_tour=null;
+function toggleTour(){ _tour?stopTour():startTour(); }
+function stopTour(){
+  if(_tour){cancelAnimationFrame(_tour.raf);clearTimeout(_tour.to);_tour=null;}
+  const tv=document.getElementById('traveler');if(tv)tv.setAttribute('opacity','0');
+  document.getElementById('tour-btn').textContent='🚶 Iniciar tour guiado';
+  document.getElementById('tour-caption').textContent='';
+}
+function startTour(){
+  if(!_trilhaPos.length)return;
+  document.getElementById('tour-btn').textContent='⏹ Parar tour';
+  const tv=document.getElementById('traveler');tv.setAttribute('opacity','1');
+  _tour={i:0,raf:null,to:null};
+  hopTo(0);
+}
+function hopTo(i){
+  if(!_tour)return;
+  const tv=document.getElementById('traveler');const a=_trilhaPos[i];
+  const cap=document.getElementById('tour-caption');
+  cap.innerHTML=`<b style="color:var(--txt)">${esc(a.icon+' '+a.name)}</b> &nbsp;<span style="color:var(--muted2)">(${i+1}/${_trilhaPos.length})</span>`;
+  const from=i===0?a:_trilhaPos[i-1];
+  const t0=performance.now(),dur=700;
+  const step=now=>{
+    if(!_tour)return;
+    const k=Math.min(1,(now-t0)/dur);const e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;
+    tv.setAttribute('cx',from.x+(a.x-from.x)*e);
+    tv.setAttribute('cy',from.y+(a.y-from.y)*e);
+    if(k<1)_tour.raf=requestAnimationFrame(step);
+    else{ _tour.to=setTimeout(()=>{ if(!_tour)return;
+        if(i+1<_trilhaPos.length)hopTo(i+1);
+        else{cap.innerHTML='🏁 <b style="color:var(--green)">Chegou ao fim da trilha!</b> Esse é o caminho completo do conhecimento em C.';
+             setTimeout(stopTour,2600);} },950); }
+  };
+  _tour.raf=requestAnimationFrame(step);
+}
+function trilhaClick(mk){
+  if(_tour)stopTour();
+  document.querySelector('[data-view="roadmap"]').click();
+  const m=modOf(mk);m._open=true;renderRoadmap();
+  setTimeout(()=>{const els=document.querySelectorAll('#roadmap .phase');
+    const idx=COURSE.findIndex(x=>x.key===mk);if(els[idx])els[idx].scrollIntoView({behavior:'smooth',block:'center'});},80);
+}
+
+/* ============ REVIEW: dashboard ============ */
+function renderReview(){
+  const due=dueCards().length, tot=allCards().length;
+  document.getElementById('r-due').textContent=due;
+  document.getElementById('r-total').textContent=tot;
+  document.getElementById('r-streak').textContent=db.streak.count||0;
+  document.getElementById('b-due').textContent=due;
+  document.getElementById('rc-due-txt').textContent=due?`${due} cartão(ões) esperando`:'tudo em dia! ✅';
+}
+/* ---- FLASHCARD SESSION ---- */
+let _fs=null;
+function startFlash(mode,mk){
+  let cards;
+  if(mode==='due')cards=dueCards();
+  else cards=(FLASH[mk]||[]).map((c,i)=>({id:mk+':'+i,mk,front:c[0],back:c[1]}));
+  if(!cards.length){toast('Nenhum cartão para revisar agora 🎉');return;}
+  cards=cards.sort(()=>Math.random()-0.5);
+  _fs={cards,i:0};closeModal();showFlash();
+}
+function showFlash(){
+  const c=_fs.cards[_fs.i];const m=modOf(c.mk);
+  const pct=_fs.i/_fs.cards.length*100;
+  showModal(`<div class="rev-count">${m.icon} ${esc(m.name)} — cartão ${_fs.i+1} de ${_fs.cards.length}</div>
+    <div class="rev-progress"><div style="width:${pct}%"></div></div>
+    <div class="flash-wrap"><div class="flash" id="flash" onclick="document.getElementById('flash').classList.toggle('flip');document.getElementById('grade-area').style.display='block'">
+      <div class="flash-face flash-front"><div class="flash-tag">Pergunta</div><div class="flash-q">${esc(c.front)}</div><div class="flash-hint">clique para ver a resposta</div></div>
+      <div class="flash-face flash-back"><div class="flash-tag">Resposta</div><div class="flash-a">${esc(c.back)}</div></div>
+    </div></div>
+    <div id="grade-area" style="display:none">
+      <p style="text-align:center;color:var(--muted);font-size:13px;margin-bottom:10px">Como foi lembrar?</p>
+      <div class="grade-btns">
+        <button class="grade-btn g0" onclick="nextFlash(0)">Errei<small>revisar logo</small></button>
+        <button class="grade-btn g1" onclick="nextFlash(1)">Bom<small>lembrei</small></button>
+        <button class="grade-btn g2" onclick="nextFlash(2)">Fácil<small>de boa</small></button>
+      </div></div>
+    <div class="modal-actions" style="margin-top:14px"><button class="btn ghost sm" onclick="closeModal()">Encerrar</button></div>`);
+}
+function nextFlash(grade){
+  gradeCard(_fs.cards[_fs.i].id,grade);
+  _fs.i++;
+  if(_fs.i<_fs.cards.length)showFlash();
+  else{showModal(`<div class="quiz-result"><div class="big">🎉</div><h3>Revisão concluída!</h3>
+    <p style="color:var(--muted);margin-top:8px">${_fs.cards.length} cartões revisados. Os que você errou voltam mais cedo.</p>
+    <div class="modal-actions" style="justify-content:center;margin-top:18px"><button class="btn" onclick="closeModal()">Fechar</button></div></div>`);_fs=null;}
+}
+/* ---- QUIZ SESSION ---- */
+let _qs=null,_qtimer=null;
+function startQuiz(mk,timed){
+  let qs=(QUIZ[mk]||[]).map(q=>({...q,mk}));
+  if(!qs.length){toast('Sem perguntas neste módulo');return;}
+  qs=qs.sort(()=>Math.random()-0.5);
+  _qs={qs,i:0,score:0,timed,left:qs.length*20};closeModal();showQuiz();
+  if(timed){clearInterval(_qtimer);_qtimer=setInterval(()=>{_qs.left--;const el=document.getElementById('q-timer');if(el)el.textContent='⏱️ '+_qs.left+'s';if(_qs.left<=0){clearInterval(_qtimer);finishQuiz();}},1000);}
+}
+function showQuiz(){
+  const q=_qs.qs[_qs.i];const m=modOf(q.mk);
+  showModal(`<div class="rev-count">${m.icon} ${esc(m.name)} — ${_qs.i+1}/${_qs.qs.length} ${_qs.timed?'<span class="quiz-timer" id="q-timer">⏱️ '+_qs.left+'s</span>':''}</div>
+    <div class="rev-progress"><div style="width:${_qs.i/_qs.qs.length*100}%"></div></div>
+    <div class="quiz-q">${esc(q.q)}</div>
+    <div id="q-opts">${q.o.map((op,k)=>`<button class="quiz-opt" onclick="answerQuiz(${k})">${esc(op)}</button>`).join('')}</div>
+    <div class="quiz-exp" id="q-exp"></div>
+    <div class="modal-actions"><button class="btn ghost sm" onclick="closeModal();clearInterval(_qtimer)">Encerrar</button>
+      <button class="btn sm" id="q-next" style="display:none" onclick="nextQuiz()">Próxima ▸</button></div>`);
+}
+function answerQuiz(k){
+  const q=_qs.qs[_qs.i];const opts=document.querySelectorAll('#q-opts .quiz-opt');
+  opts.forEach((b,idx)=>{b.disabled=true;if(idx===q.a)b.classList.add('correct');if(idx===k&&k!==q.a)b.classList.add('wrong');});
+  const ok=k===q.a;
+  if(ok){_qs.score++;db._quizRight=(db._quizRight||0)+1;award(4,true);}
+  const exp=document.getElementById('q-exp');exp.innerHTML=(ok?'✅ Correto! ':'❌ ')+esc(q.e);exp.classList.add('show');
+  document.getElementById('q-next').style.display='inline-block';
+  checkBadges();
+}
+function nextQuiz(){_qs.i++;if(_qs.i<_qs.qs.length)showQuiz();else finishQuiz();}
+function finishQuiz(){
+  clearInterval(_qtimer);
+  const pct=Math.round(_qs.score/_qs.qs.length*100);
+  const msg=pct>=80?'Excelente! 🌟':pct>=50?'Bom, continue praticando 💪':'Revise o conteúdo e tente de novo 📖';
+  save();
+  showModal(`<div class="quiz-result"><div class="big">${pct}%</div><h3>${_qs.score} de ${_qs.qs.length} corretas</h3>
+    <p style="color:var(--muted);margin-top:8px">${msg}</p>
+    <div class="modal-actions" style="justify-content:center;margin-top:18px"><button class="btn" onclick="closeModal()">Fechar</button></div></div>`);
+  _qs=null;
+}
+/* ---- PICKER (escolher módulo) ---- */
+function openPicker(type){
+  const titulo={flash:'🃏 Flashcards — escolha o módulo',quiz:'❓ Quiz — escolha o módulo',sim:'⏱️ Simulado — escolha o módulo'}[type];
+  const src=type==='flash'?FLASH:QUIZ;
+  const opts=COURSE.filter(m=>src[m.key]&&src[m.key].length).map(m=>{
+    const cnt=src[m.key].length;
+    const act=type==='flash'?`startFlash('mod','${m.key}')`:type==='sim'?`startQuiz('${m.key}',true)`:`startQuiz('${m.key}',false)`;
+    return `<button class="quiz-opt" onclick="${act}">${m.icon} ${esc(m.name)} <span style="float:right;color:var(--muted)">${cnt} ${type==='flash'?'cartões':'questões'}</span></button>`;
+  }).join('');
+  showModal(`<h3>${titulo}</h3>${type==='sim'?'<p style="color:var(--muted);font-size:13px;margin-bottom:12px">20 segundos por questão ⏱️</p>':''}
+    <div style="max-height:55vh;overflow-y:auto;margin-top:12px">${opts}</div>
+    <div class="modal-actions"><button class="btn ghost" onclick="closeModal()">Fechar</button></div>`);
+}
+/* ============ POMODORO ============ */
+let _pomo={sec:25*60,run:false,brk:false,timer:null};
+function pomoFmt(){const m=Math.floor(_pomo.sec/60),s=_pomo.sec%60;return String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');}
+function pomoUpdate(){document.getElementById('pomo-time').textContent=pomoFmt();
+  document.getElementById('pomo-label').textContent=_pomo.brk?'☕ Pausa':'🍅 Foco';
+  const w=document.getElementById('pomo');w.classList.toggle('run',_pomo.run&&!_pomo.brk);w.classList.toggle('brk',_pomo.run&&_pomo.brk);
+  document.getElementById('pomo-start').textContent=_pomo.run?'⏸':'▶';}
+function pomoToggle(){_pomo.run=!_pomo.run;
+  if(_pomo.run){_pomo.timer=setInterval(()=>{_pomo.sec--;
+    if(_pomo.sec<0){ // trocou de fase
+      if(!_pomo.brk){db.pomos++;award(8,true);toast('🍅 Pomodoro completo! Pausa de 5 min.');_pomo.brk=true;_pomo.sec=5*60;checkBadges();save();}
+      else{toast('Pausa acabou! Bora focar 🍅');_pomo.brk=false;_pomo.sec=25*60;}
+    }
+    pomoUpdate();},1000);}
+  else clearInterval(_pomo.timer);
+  pomoUpdate();}
+function pomoReset(){clearInterval(_pomo.timer);_pomo={sec:25*60,run:false,brk:false,timer:null};pomoUpdate();}
+/* ============ PROGRESS / GAMIFICAÇÃO ============ */
+function weekActions(){let s=0;for(let i=0;i<7;i++)s+=db.activity[dateAddDays(-i)]||0;return s;}
+function editGoal(){const v=prompt('Meta de ações de estudo por semana:',db.goal.weekly);
+  const n=parseInt(v);if(n>0){db.goal.weekly=n;save();}}
+function renderProgress(){
+  const lvl=levelOf(db.xp),inLvl=xpInLevel(db.xp);
+  document.getElementById('lvl-num').textContent=lvl;
+  const titles=['Iniciante','Aprendiz','Praticante','Programador','Avançado','Veterano','Mestre','Expert','Ninja','Lenda'];
+  document.getElementById('lvl-title').textContent=`Nível ${lvl} — ${titles[Math.min(lvl-1,titles.length-1)]}`;
+  document.getElementById('xp-bar').style.width=(inLvl/120*100)+'%';
+  document.getElementById('xp-txt').textContent=`${inLvl} / 120 XP · ${db.xp} XP total`;
+  document.getElementById('lvl-ring').style.setProperty('--p',(inLvl/120*100)+'%');
+  // streak
+  const alive=db.streak.last===isoDate()||db.streak.last===dateAddDays(-1);
+  document.getElementById('streak-n').textContent=alive?db.streak.count:0;
+  document.querySelector('.streak-box').classList.toggle('active',alive&&db.streak.count>0);
+  // meta
+  const wa=weekActions(),wg=db.goal.weekly;
+  document.getElementById('goal-span').textContent=`${wa} / ${wg}`;
+  document.getElementById('goal-bar').style.width=Math.min(100,wa/wg*100)+'%';
+  // badges
+  const earned=BADGES.filter(b=>db.badges[b.id]).length;
+  document.getElementById('badge-count').textContent=`(${earned}/${BADGES.length})`;
+  document.getElementById('badges-grid').innerHTML=BADGES.map(b=>{
+    const e=db.badges[b.id];
+    return `<div class="badge-item ${e?'earned':'locked'}"><div class="badge-ic">${b.ic}</div><div class="badge-n">${esc(b.n)}</div><div class="badge-d">${esc(b.d)}</div></div>`;
+  }).join('');
+  // heatmap
+  renderHeatmap();
+  // stats
+  const exDone=Object.values(db.exProgress).filter(p=>p.status===2).length+db.custom.filter(e=>e.status===2).length;
+  const exTotal=COURSE.reduce((a,m)=>a+(m.ex?m.ex.length:0),0);
+  const cardsRev=db._flashCount||0, quizR=db._quizRight||0;
+  const activeDays=Object.keys(db.activity).length;
+  const stats=[['📖 Aulas lidas',AULA_KEYS.filter(k=>db.read[k]).length+'/'+AULA_KEYS.length],
+    ['💻 Exercícios',exDone+'/'+exTotal],['🃏 Flashcards revisados',cardsRev],['❓ Quizzes certos',quizR],
+    ['🍅 Pomodoros',db.pomos||0],['🔥 Maior sequência',db.streak.count||0],['📅 Dias ativos',activeDays],['⚡ XP total',db.xp]];
+  document.getElementById('stats-grid').innerHTML=stats.map(([k,v])=>`<div class="stat-line"><div class="v">${v}</div><div class="k">${k}</div></div>`).join('');
+}
+function renderHeatmap(){
+  const weeks=18, cells=weeks*7;
+  // alinhar para terminar hoje; começa no domingo
+  const todayDow=new Date().getDay();
+  const start=-(cells-1-todayDow); // offset do primeiro dia
+  let cols=[];
+  for(let w=0;w<weeks;w++){
+    let col='<div class="hm-col">';
+    for(let d=0;d<7;d++){
+      const off=start+w*7+d;
+      if(off>0){col+='<div class="hm-cell" style="visibility:hidden"></div>';continue;}
+      const date=dateAddDays(off);const c=db.activity[date]||0;
+      const lv=c===0?'':c<=1?'l1':c<=3?'l2':c<=6?'l3':'l4';
+      col+=`<div class="hm-cell ${lv}" title="${date}: ${c} ação(ões)"></div>`;
+    }
+    cols.push(col+'</div>');
+  }
+  document.getElementById('heatmap').innerHTML=`<div class="hm">${cols.join('')}</div>
+    <div style="display:flex;gap:5px;align-items:center;margin-top:8px;font-size:11px;color:var(--muted2)">menos
+    <span class="hm-cell"></span><span class="hm-cell l1"></span><span class="hm-cell l2"></span><span class="hm-cell l3"></span><span class="hm-cell l4"></span>mais</div>`;
+}
+
+/* ============ BACKUP ============ */
+document.getElementById('export').onclick=()=>{
+  const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='jornada-c-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();toast('Backup exportado ⬇');
+};
+document.getElementById('import').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();
+  r.onload=()=>{try{const d=JSON.parse(r.result);db=Object.assign(load(),d);save();toast('Backup restaurado ✅');}catch(x){alert('Arquivo inválido.');}};
+  r.readAsText(f);};
+
+fillFilters();render();pomoUpdate();
+</script>
+</body>
+</html>

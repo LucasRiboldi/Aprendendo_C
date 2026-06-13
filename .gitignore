@@ -1,0 +1,13 @@
+# Backups de dados pessoais do app (não versionar)
+*.json
+jornada-c-backup-*.json
+
+# Sistema
+Thumbs.db
+desktop.ini
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
